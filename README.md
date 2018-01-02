@@ -3,6 +3,10 @@
   - Install CRAN https://cran.r-project.org/mirrors.html
   - Open the R Console
   - In the R Console run this command to compile the r code 
+  - you will need to load the plumber library 
+ ```  
+library(plumber)
+```
 ```  
 r <- plumb('/Users/brentgammon/Desktop/plumber.r')
 ```
