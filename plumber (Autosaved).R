@@ -43,7 +43,7 @@ a <- function(dataset1, dataset2) {
 }
 
 
-# #' Plot out correlation from dataset passed in 
+# #' Plot out correctlation from dataset passed in 
 # #' @param req The dataset objects
 # #' @post /demo
 # function(req) {
