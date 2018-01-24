@@ -37,13 +37,13 @@ function(spec){
 #' @param dataset1 The first dataset
 #' @param dataset2 The second dataset
 #' @post /correlation
-#' @png
-a <- function(dataset1, dataset2) {
+#' @application/json
+function(dataset1, dataset2) {
 	dataset1
 }
 
 
-# #' Plot out correlation from dataset passed in 
+# #' Plot out correctlation from dataset passed in 
 # #' @param req The dataset objects
 # #' @post /demo
 # function(req) {
