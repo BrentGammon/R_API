@@ -39,7 +39,9 @@ function(spec){
 #' @post /correlation
 #' @application/json
 function(dataset1, dataset2) {
-	dataset1
+  conv <- as.data.frame(dataset1)
+  View(conv)
+  dataset1
 }
 
 
