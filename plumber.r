@@ -1,5 +1,6 @@
 # plumber.R
 library("ggpubr")
+library("dplyr")
 
 #' @filter cors
 cors <- function(res) {
@@ -40,7 +41,15 @@ function(spec){
 #' @application/json
 function(dataset1, dataset2) {
   conv <- as.data.frame(dataset1)
+  conv$startdate = as_datetime(conv$startdate)
+  conv$enddate = as_datetime(conv$enddate)
+  conv2 <- as.data.frame(dataset2)
+  conv2$startdate = as_datetime(conv2$startdate)
+  conv2$enddate = as_datetime(conv2$enddate) 
   View(conv)
+  View(conv2)
+  #conv3 <- as_datetime(dataset1$startdate)
+  #View(conv3)
   dataset1
 }
 
