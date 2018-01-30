@@ -35,33 +35,49 @@ function(spec){
        main=title, xlab="Sepal Length", ylab="Petal Length")
 }
 
+# @application/json
+
 #' Correlation endpoint
 #' @param dataset1 The first dataset
 #' @param dataset2 The second dataset
+#' @param parameter1 1st watch parameter
+#' @param parameter2 2nd watch parameter
+#' @param duration Month, Week, Day, Hours
 #' @post /correlation
 #' @png
-function(dataset1, dataset2) {
+function(dataset1, dataset2, parameter1, parameter2, duration) {
   print(dataset1)
   conv <- as.data.frame(dataset1)
-  
+
+  #conv$startdate = as.datetime(conv$startdate)
+  #conv$enddate = as_datetime(conv$enddate)
+
   df1 <- conv %>%
     mutate(startdate = ymd_hms(startdate), enddate = ymd_hms(enddate)) %>%
     mutate(total = as.numeric(total)) %>%
-    mutate(month_name = month(startdate, label = TRUE)) %>% 
+    mutate(month_name = month(startdate, label = TRUE)) %>%
     group_by(hour=floor_date(startdate, "hour")) %>%
     summarize(total=sum(total))
+
   View(df1)
   
   
   
   conv2 <- as.data.frame(dataset2)
+
+
+  View(df1)
   
+
+  
+
   df2 <- conv2 %>%
     mutate(startdate = ymd_hms(startdate), enddate = ymd_hms(enddate)) %>%
     mutate(total = as.numeric(total)) %>%
-    mutate(month_name = month(startdate, label = TRUE)) %>% 
+    mutate(month_name = month(startdate, label = TRUE)) %>%
     group_by(hour=floor_date(startdate, "hour")) %>%
     summarize(total=sum(total))
+
   View(df2)
   
  df3 <- df2[(df2$hour %in% df1$hour),]
@@ -70,11 +86,16 @@ function(dataset1, dataset2) {
  View(df3)
   plot(df1$total, df3$total, type="b", ann=FALSE)
   title("Title", xlab="xxxx", ylab="yyyy")
+
+
+  plot(df1$total, df3$total, type="p", ann=FALSE)
+  title("Title", xlab="xxxx", ylab="yyyy")
 }
 
 
+ 
 
-# #' Plot out correctlation from dataset passed in 
+# #' Plot out correctlation from dataset passed in
 # #' @param req The dataset objects
 # #' @post /demo
 # function(req) {
@@ -98,4 +119,3 @@ corrPlot <- function(a, b){
      y <-as.numeric(strsplit(b, ",")[[1]])
     plot(y,x)
 }
-
