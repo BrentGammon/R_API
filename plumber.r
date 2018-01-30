@@ -24,13 +24,13 @@ function(msg=""){
 function(spec){
   myData <- iris
   title <- "All Species"
-
+  
   # Filter if the species was specified
   if (!missing(spec)){
     title <- paste0("Only the '", spec, "' Species")
     myData <- subset(iris, Species == spec)
   }
-
+  
   plot(myData$Sepal.Length, myData$Petal.Length,
        main=title, xlab="Sepal Length", ylab="Petal Length")
 }
@@ -47,66 +47,30 @@ function(spec){
 #' @png
 function(dataset1, dataset2, parameter1, parameter2, duration) {
   print(dataset1)
-  conv <- as.data.frame(dataset1)
-
-  #conv$startdate = as.datetime(conv$startdate)
-  #conv$enddate = as_datetime(conv$enddate)
-
-  df1 <- conv %>%
-    mutate(startdate = ymd_hms(startdate), enddate = ymd_hms(enddate)) %>%
-    mutate(total = as.numeric(total)) %>%
-    mutate(month_name = month(startdate, label = TRUE)) %>%
-    group_by(hour=floor_date(startdate, "hour")) %>%
-    summarize(total=sum(total))
-
-  View(df1)
+   conv <- as.data.frame(dataset1)
+   
+   df1 <- conv %>%
+     mutate(startdate = ymd_hms(startdate), enddate = ymd_hms(enddate)) %>%
+     mutate(total = as.numeric(total)) %>%
+     mutate(month_name = month(startdate, label = TRUE)) %>%
+     group_by(hour=floor_date(startdate, "hour")) %>%
+     summarize(total=sum(total))
+   
+   conv2 <- as.data.frame(dataset2)
+   
+   df2 <- conv2 %>%
+     mutate(startdate = ymd_hms(startdate), enddate = ymd_hms(enddate)) %>%
+     mutate(total = as.numeric(total)) %>%
+     mutate(month_name = month(startdate, label = TRUE)) %>%
+     group_by(hour=floor_date(startdate, "hour")) %>%
+     summarize(total=sum(total))
   
+   df3 <- df2[(df2$hour %in% df1$hour),]
   
-  
-  conv2 <- as.data.frame(dataset2)
+   plot(df1$total, df3$total, type="p", ann=FALSE)
+   title("Title", xlab="xxxx", ylab="yyyy")
 
-
-  View(df1)
-  
-
-  
-
-  df2 <- conv2 %>%
-    mutate(startdate = ymd_hms(startdate), enddate = ymd_hms(enddate)) %>%
-    mutate(total = as.numeric(total)) %>%
-    mutate(month_name = month(startdate, label = TRUE)) %>%
-    group_by(hour=floor_date(startdate, "hour")) %>%
-    summarize(total=sum(total))
-
-  View(df2)
-  
- df3 <- df2[(df2$hour %in% df1$hour),]
- 
- View(df1$total)
- View(df3)
-  plot(df1$total, df3$total, type="b", ann=FALSE)
-  title("Title", xlab="xxxx", ylab="yyyy")
-
-
-  plot(df1$total, df3$total, type="p", ann=FALSE)
-  title("Title", xlab="xxxx", ylab="yyyy")
 }
-
-
- 
-
-# #' Plot out correctlation from dataset passed in
-# #' @param req The dataset objects
-# #' @post /demo
-# function(req) {
-#     list(req = paste0(req))
-# }
-
-# #' @param req
-# #' @post /x
-# function(req){
-#   list(d1 = req$data1, d2=req$data2))
-# }
 
 
 #' @param a The message to echo back.
@@ -114,8 +78,8 @@ function(dataset1, dataset2, parameter1, parameter2, duration) {
 #' @get /corrPlot
 #' @png
 corrPlot <- function(a, b){
-    #as.numeric(strsplit("1,2,3,4,5,6,7,8", ",")[[1]])
-     x <-as.numeric(strsplit(a, ",")[[1]])
-     y <-as.numeric(strsplit(b, ",")[[1]])
-    plot(y,x)
+  #as.numeric(strsplit("1,2,3,4,5,6,7,8", ",")[[1]])
+  x <-as.numeric(strsplit(a, ",")[[1]])
+  y <-as.numeric(strsplit(b, ",")[[1]])
+  plot(y,x)
 }
