@@ -17,13 +17,12 @@ cors <- function(res) {
 #' @param parameter2 2nd parameter
 #' @param duration Month, Week, Day, Hours
 #' @post /correlation
-#' @png
+#' @png (width = 1000, height = 1000)
 function(dataset1,
          dataset2,
          parameter1,
          parameter2,
          duration) {
-  
   options(scipen=999)
   
   conv <- as.data.frame(dataset1)
@@ -121,17 +120,20 @@ function(dataset1,
   df15 <- df14[(df14$hour %in% df13$hour), ]
   df16 <- df13[(df13$hour %in% df14$hour), ]
   
-  # title <-
-  #   paste("Correlation between", parameter1, "and", parameter2, "over 7 days", sep = " ")
-  # plot1 <- plot(df1$total, df3$total, type = "p", ann = FALSE)
-  # title("Correlation between", parameter1, "and", parameter2, "over x days", sep = " ", xlab = parameter1, ylab = parameter2)
+  title <-
+    paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
   
-  # 4 figures arranged in 4 rows and 1 columns
   attach(mtcars)
-  par(mfrow=c(4,1))
+  par(mfrow=c(2,2), mai=c(0.8,1,2,1), cex=1.5)
   plot(df3$total, df4$total, type = "p", ann = FALSE)
+  title("1 Hour")
   plot(df7$total, df8$total, type = "p", ann = FALSE)
+  title("1 Day")
   plot(df11$total, df12$total, type = "p", ann = FALSE)
+  title("1 Week")
   plot(df10$total, df12$total, type = "p", ann = FALSE)
+  title("1 Month")
+  mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
 }
+
 
