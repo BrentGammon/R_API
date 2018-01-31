@@ -9,39 +9,6 @@ cors <- function(res) {
   plumber::forward()
 }
 
-
-#' Echo the parameter that was sent in
-#' @param msg The message to echo back.
-#' @get /echo
-function(msg = "") {
-  list(msg = paste0("The message is: '", msg, "'"))
-}
-
-#' Plot out data from the iris dataset
-#' @param spec If provided, filter the data to only this species (e.g. 'setosa')
-#' @get /plot
-#' @png
-function(spec) {
-  myData <- iris
-  title <- "All Species"
-  
-  # Filter if the species was specified
-  if (!missing(spec)) {
-    title <- paste0("Only the '", spec, "' Species")
-    myData <- subset(iris, Species == spec)
-  }
-  
-  plot(
-    myData$Sepal.Length,
-    myData$Petal.Length,
-    main = title,
-    xlab = "Sepal Length",
-    ylab = "Petal Length"
-  )
-}
-
-# @application/json
-
 #' Correlation endpoint
 #' @param dataset1 The first dataset
 #' @param dataset2 The second dataset
@@ -55,17 +22,18 @@ function(dataset1,
          parameter1,
          parameter2,
          duration) {
-  title <-
-    paste("Correlation between", parameter1, "and", parameter2, sep = " ")
   
   conv <- as.data.frame(dataset1)
+  
+  # for (times in t("hour", "3 hours", "6 hours", "12 hours", "day")) {
+  # }
   
   df1 <- conv %>%
     mutate(startdate = ymd_hms(startdate),
            enddate = ymd_hms(enddate)) %>%
     mutate(total = as.numeric(total)) %>%
     mutate(month_name = month(startdate, label = TRUE)) %>%
-    group_by(hour = floor_date(startdate, "hour")) %>%
+    group_by(hour = floor_date(startdate, "7 days")) %>%
     summarize(total = sum(total))
   
   conv2 <- as.data.frame(dataset2)
@@ -75,23 +43,17 @@ function(dataset1,
            enddate = ymd_hms(enddate)) %>%
     mutate(total = as.numeric(total)) %>%
     mutate(month_name = month(startdate, label = TRUE)) %>%
-    group_by(hour = floor_date(startdate, "hour")) %>%
+    group_by(hour = floor_date(startdate, "7 days")) %>%
     summarize(total = sum(total))
   
-  df3 <- df2[(df2$hour %in% df1$hour),]
+  df3 <- df2[(df2$hour %in% df1$hour), ]
+  View(df1)
+  View(df2)
+  View(df3)
   
+  title <-
+    paste("Correlation between", parameter1, "and", parameter2, "over 7 days", sep = " ")
   plot(df1$total, df3$total, type = "p", ann = FALSE)
   title(title, xlab = parameter1, ylab = parameter2)
 }
 
-
-#' @param a The message to echo back.
-#' @param b The message to echo back.
-#' @get /corrPlot
-#' @png
-corrPlot <- function(a, b) {
-  #as.numeric(strsplit("1,2,3,4,5,6,7,8", ",")[[1]])
-  x <- as.numeric(strsplit(a, ",")[[1]])
-  y <- as.numeric(strsplit(b, ",")[[1]])
-  plot(y, x)
-}
