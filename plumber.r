@@ -24,6 +24,8 @@ function(dataset1,
          parameter2,
          duration) {
   
+  options(scipen=999)
+  
   conv <- as.data.frame(dataset1)
   conv3 <- as.data.frame(dataset1)
   conv5 <- as.data.frame(dataset1)
@@ -124,8 +126,7 @@ function(dataset1,
   # plot1 <- plot(df1$total, df3$total, type = "p", ann = FALSE)
   # title("Correlation between", parameter1, "and", parameter2, "over x days", sep = " ", xlab = parameter1, ylab = parameter2)
   
-  # 4 figures arranged in 2 rows and 2 columns
-  dev.new(width=5, height=5)
+  # 4 figures arranged in 4 rows and 1 columns
   attach(mtcars)
   par(mfrow=c(4,1))
   plot(df3$total, df4$total, type = "p", ann = FALSE)
