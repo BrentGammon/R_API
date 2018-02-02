@@ -27,26 +27,35 @@ function(dataset1,
   
   conv <- as.data.frame(dataset1)
   conv2 <- as.data.frame(dataset2)
+  View(conv)
+  View(as.numeric(conv$total))
   
   if(parameter1 == 'heartrate' || parameter1 == 'sleepheartrate'){
+    print('here 1')
     df1 <- meantotal(conv, 'hour')
     df2 <- meantotal(conv, '1 day')
     df3 <- meantotal(conv, '7 days')
     df4 <- meantotal(conv, '30 days')
   }else{
+    print('print here 1 1')
     df1 <- sumtotal(conv, 'hour')
+    print('print here 1 2')
     df2 <- sumtotal(conv, '1 day')
+    print('print here 1 3')
     df3 <- sumtotal(conv, '7 days')
+    print('print here 1 4')
     df4 <- sumtotal(conv, '30 days')
   }
   
   if(parameter2 == 'heartrate' || parameter2 == 'sleepheartrate'){
+    print('22')
     df10 <- meantotal(conv2,'hour')
     df20 <- meantotal(conv2, '1 day')
     df30 <- meantotal(conv2, '7 days')
     df40 <- meantotal(conv2, '30 days')
     
   }else{
+    print('33')
     df10 <- sumtotal(conv2, 'hour')
     df20 <- sumtotal(conv2, '1 day')
     df30 <- sumtotal(conv2, '7 days')
@@ -58,21 +67,19 @@ function(dataset1,
   df200 <- df1[(df1$hour %in% df10$hour), ]
   View(df100)
   View(df200)
-  
+
+
   df300 <- df20[(df20$hour %in% df2$hour), ]
-  df400 <- df2[(df2$hour %in% df20$hour), ] 
-  View(df300)
-  View(df400)
-  
+  df400 <- df2[(df2$hour %in% df20$hour), ]
+
+
   df500 <- df30[(df30$hour %in% df3$hour), ]
-  df600 <- df3[(df3$hour %in% df30$hour), ] 
-  View(df500)
-  View(df600)
-  
+  df600 <- df3[(df3$hour %in% df30$hour), ]
+
+
   df700 <- df40[(df40$hour %in% df4$hour), ]
-  df800 <- df4[(df4$hour %in% df40$hour), ] 
-  View(df700)
-  View(df800)
+  df800 <- df4[(df4$hour %in% df40$hour), ]
+
   
   
   title <-
@@ -81,31 +88,37 @@ function(dataset1,
   attach(mtcars)
   par(mfrow=c(2,2), mai=c(0.8,1,2,1), cex=1.5)
   plot(df100$total, df200$total, type = "p", ann = FALSE)
+
   title("1 Hour")
   plot(df300$total, df400$total, type = "p", ann = FALSE)
+
   title("1 Day")
   plot(df500$total, df600$total, type = "p", ann = FALSE)
+
   title("1 Week")
   plot(df700$total, df800$total, type = "p", ann = FALSE)
+
   title("1 Month")
   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+
   
 }
 
-sumtotal <- function(conv, duration){
+sumtotal <- function(conv, duration1){
+  print('in sum')
   conv %>%
     mutate(startdate = ymd_hms(startdate)) %>%
     mutate(total = as.numeric(total)) %>%
     mutate(month_name = month(startdate, label = TRUE)) %>%
-    group_by(hour = floor_date(startdate, duration)) %>%
+    group_by(hour = floor_date(startdate, duration1)) %>%
     summarize(total = sum(total))
 }
 
-meantotal <- function(conv, duration){
+meantotal <- function(conv, duration1){
   conv %>%
     mutate(startdate = ymd_hms(startdate)) %>%
     mutate(total = as.numeric(total)) %>%
     mutate(month_name = month(startdate, label = TRUE)) %>%
-    group_by(hour = floor_date(startdate, duration)) %>%
+    group_by(hour = floor_date(startdate, duration1)) %>%
     summarize(total = mean(total))
 }
