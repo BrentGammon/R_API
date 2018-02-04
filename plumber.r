@@ -27,35 +27,27 @@ function(dataset1,
   
   conv <- as.data.frame(dataset1)
   conv2 <- as.data.frame(dataset2)
-  View(conv)
-  View(as.numeric(conv$total))
+
   
   if(parameter1 == 'heartrate' || parameter1 == 'sleepheartrate'){
-    print('here 1')
     df1 <- meantotal(conv, 'hour')
     df2 <- meantotal(conv, '1 day')
     df3 <- meantotal(conv, '7 days')
     df4 <- meantotal(conv, '30 days')
   }else{
-    print('print here 1 1')
     df1 <- sumtotal(conv, 'hour')
-    print('print here 1 2')
     df2 <- sumtotal(conv, '1 day')
-    print('print here 1 3')
     df3 <- sumtotal(conv, '7 days')
-    print('print here 1 4')
     df4 <- sumtotal(conv, '30 days')
   }
   
   if(parameter2 == 'heartrate' || parameter2 == 'sleepheartrate'){
-    print('22')
     df10 <- meantotal(conv2,'hour')
     df20 <- meantotal(conv2, '1 day')
     df30 <- meantotal(conv2, '7 days')
     df40 <- meantotal(conv2, '30 days')
     
   }else{
-    print('33')
     df10 <- sumtotal(conv2, 'hour')
     df20 <- sumtotal(conv2, '1 day')
     df30 <- sumtotal(conv2, '7 days')
@@ -105,7 +97,6 @@ function(dataset1,
 }
 
 sumtotal <- function(conv, duration1){
-  print('in sum')
   conv %>%
     mutate(startdate = ymd_hms(startdate)) %>%
     mutate(total = as.numeric(total)) %>%
