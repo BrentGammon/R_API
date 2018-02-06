@@ -101,22 +101,21 @@ function(dataset1,
     paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
   
   attach(mtcars)
-  par(mfrow=c(2,2), mai=c(0.8,1,2,1), cex=1.5)
-  plot(df100$total, df200$total, type = "p", ann = FALSE)
-
-  title("1 Hour")
-  plot(df300$total, df400$total, type = "p", ann = FALSE)
-
-  title("1 Day")
-  plot(df500$total, df600$total, type = "p", ann = FALSE)
-
-  title("1 Week")
-  plot(df700$total, df800$total, type = "p", ann = FALSE)
-
-  title("1 Month")
-  mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
-
+  par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
   
+  plot(df100$total, df200$total, type = "p", ann = FALSE)
+  title("1 Hour", xlab = parameter1, ylab = parameter2)
+
+  plot(df300$total, df400$total, type = "p", ann = FALSE)
+  title("1 Day", xlab = parameter1, ylab = parameter2)
+
+  plot(df500$total, df600$total, type = "p", ann = FALSE)
+  title("1 Week", xlab = parameter1, ylab = parameter2)
+
+  plot(df700$total, df800$total, type = "p", ann = FALSE)
+  title("1 Month", xlab = parameter1, ylab = parameter2)
+
+  mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
 }
 
 datasetSummary <- function(dataset) {
