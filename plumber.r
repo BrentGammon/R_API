@@ -1,14 +1,39 @@
 # plumber.R
-library("ggpubr")
-library("dplyr")
-library("lubridate")
-library("gridExtra")
+library("ggpubr",warn.conflicts = FALSE)
+library("dplyr",warn.conflicts = FALSE)
+library("lubridate",warn.conflicts = FALSE)
+library("gridExtra",warn.conflicts = FALSE)
+library('ggplot2',warn.conflicts = FALSE)
+library("jsonlite")
+
 
 #' @filter cors
 cors <- function(res) {
   res$setHeader("Access-Control-Allow-Origin", "*")
   plumber::forward()
 }
+
+
+
+#' Infomation about dataset 1 and 2 
+#' @param dataset1 The first dataset  
+#' @param dataset2 The second dataset
+#' @param parameter1 The name of datase1
+#' @param parameter2 The name of dataset2
+#' @post /datasetInformation
+function(dataset1,dataset2,parameter1,parameter2){
+  
+
+  #paste0('{"dataset1":', datasetSummary(dataset1), ',"dataset2":', datasetSummary(dataset2), '}' )
+  
+  #datasetSummary(dataset2)
+  json <- list(datasetSummary(dataset1),datasetSummary(dataset2))
+  names(json) <- c("dataset1", "dataset2")
+  json <- toJSON(json)
+  
+}
+
+
 
 #' Correlation endpoint
 #' @param dataset1 The first dataset
@@ -57,8 +82,6 @@ function(dataset1,
   
   df100 <- df10[(df10$hour %in% df1$hour), ]
   df200 <- df1[(df1$hour %in% df10$hour), ]
-  View(df100)
-  View(df200)
 
 
   df300 <- df20[(df20$hour %in% df2$hour), ]
@@ -94,6 +117,14 @@ function(dataset1,
   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
 
   
+}
+
+datasetSummary <- function(dataset) {
+  convJSON <- as.data.frame(dataset$total)
+  datasetStats <- as.data.frame(summary(convJSON))
+  datasetStatsObject<-datasetStats %>%
+    select(Freq)
+  datasetStatsObject 
 }
 
 sumtotal <- function(conv, duration1){
