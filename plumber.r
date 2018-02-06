@@ -79,7 +79,7 @@ function(dataset1,
     paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
   
   attach(mtcars)
-  par(mfrow=c(2,2), mar=c(5,4,4,2), cex=1.5)
+  par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
   
   plot(df100$total, df200$total, type = "p", ann = FALSE)
   title("1 Hour", xlab = parameter1, ylab = parameter2)
@@ -93,7 +93,7 @@ function(dataset1,
   plot(df700$total, df800$total, type = "p", ann = FALSE)
   title("1 Month", xlab = parameter1, ylab = parameter2)
 
-  # mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+  mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
 }
 
 sumtotal <- function(conv, duration1){
