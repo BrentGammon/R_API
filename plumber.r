@@ -5,6 +5,8 @@ library("lubridate",warn.conflicts = FALSE)
 library("gridExtra",warn.conflicts = FALSE)
 library('ggplot2',warn.conflicts = FALSE)
 library("jsonlite")
+#install.packages("tidyr")
+library("tidyr",warn.conflicts = FALSE)
 
 
 #' @filter cors
@@ -106,6 +108,8 @@ function(dataset1,
 function(dataset1,dataset2,parameter1,parameter2){
   conv <- as.data.frame(dataset1)
   conv2 <- as.data.frame(dataset2)
+  View(conv)
+  View(conv2)
   
   if(parameter1 == 'heartrate' || parameter1 == 'sleepheartrate'){
     df1 <- meantotal(conv, 'hour')
@@ -161,6 +165,105 @@ function(dataset1,dataset2,parameter1,parameter2){
   
 }
 
+#' MoodWatchCorrelation endpoint
+#' @param dataset1 The first dataset
+#' @param dataset2 The second dataset
+#' @param parameter1 1st parameter
+#' @param parameter2 2nd parameter
+#' @post /moodwatchcorrelation
+#' @png (width = 1000, height = 1000)
+function(dataset1,
+         dataset2,
+         parameter1,
+         parameter2) {
+  options(scipen=999)
+  
+  moodvalues <- c('stresslevel','tirednesslevel','activitylevel','healthinesslevel')
+  
+  
+  if(parameter1 %in% moodvalues){
+    #dataset1 represents mood data from express
+    #dataset2 represents watch data from express
+    
+    conv <- as.data.frame(dataset1)
+    conv2 <- as.data.frame(dataset2)
+    View(conv)
+    View(conv2)
+    
+    #dfMoodData and dfWatchData are created from the formatted datasets coming from express
+    
+    dfMoodData <- conv %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      select(startdate, id, level)
+    
+    dfWatchData <- conv2 %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      mutate(total = as.numeric(total)) %>%
+      select(startdate, total)  
+    
+    #moodwatchmean and moodwatchsum aggregate the watch data using the mood submission timestamps
+    #heartrate values are aggregated by mean
+    #dfAggrMoodWatch is a single dataframe that consists of the full join of mood data and aggregated watch data
+    #by mood submission timestamps
+    
+    meanparameters <- c('heartrate','sleepheartrate')
+    
+      if(parameter2 %in% meanparameters || parameter2 %in% meanparameters){
+        dfAggrMoodWatch <- moodwatchmean(dfMoodData, dfWatchData)  
+      }else{
+        dfAggrMoodWatch <- moodwatchsum(dfMoodData, dfWatchData)
+      }
+    
+    #dfAggrMoodWatch is used to create dfAggrMood and dfAggrWatch. They consist of the useful columns
+    #if further aggregation is required
+    
+    dfAggrMood <- dfAggrMoodWatch %>%
+      select(startdate, level, total)
+    
+    dfAggrWatch <- dfAggrMoodWatch %>%
+      select(startdate, total)
+    
+    plot(dfAggrMood$level, dfAggrWatch$total, type = "p", ann = FALSE)
+    
+  }else{
+    #if parameter 1 was not included in the moodvalues list, parameter 2 is a mood values,
+    #therefore dataset1 (which is mood data) is assigned to conv2
+    #dataset2 (watch data)  is assigned to conv
+    
+    conv <- as.data.frame(dataset2) 
+    conv2 <- as.data.frame(dataset1)
+    
+    #dfMoodData and dfWatchData are created from the formatted datasets coming from express
+    
+    dfMoodData <- conv2 %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      select(startdate, id, level)
+    
+    dfWatchData <- conv %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      mutate(total = as.numeric(total)) %>%
+      select(startdate, total)  
+    
+    meanparameters <- c('heartrate','sleepheartrate')
+    
+      if(parameter1 %in% meanparameters || parameter1 %in% meanparameters){
+        dfAggrMoodWatch <- moodwatchmean(dfMoodData, dfWatchData)
+      }else{
+        dfAggrMoodWatch <- moodwatchsum(dfMoodData, dfWatchData)
+      }
+    
+    dfAggrMood <- dfAggrMoodWatch %>%
+      select(startdate, level)
+    
+    dfAggrWatch <- dfAggrMoodWatch %>%
+      select(startdate, total)
+    
+    plot(dfAggrMood$level, dfAggrWatch$total, type = "p", ann = FALSE)
+    
+  }
+}
+
+
 tTestJSON <- function(data1,data2){
   item <- t.test(data1,data2,paired=TRUE)
   
@@ -201,4 +304,32 @@ meantotal <- function(conv, duration1){
     mutate(month_name = month(startdate, label = TRUE)) %>%
     group_by(hour = floor_date(startdate, duration1)) %>%
     summarize(total = mean(total))
+}
+
+moodwatchsum <- function(dfMood, dfWatch){
+  
+    full_join(dfMood, dfWatch, by = "startdate") %>% 
+    arrange(startdate) %>% 
+    fill(id, level, .direction = "up") %>% 
+    group_by(id, level) %>% 
+    summarize(total = sum(total, na.rm = TRUE)) %>%
+    na.omit() %>%
+    ungroup() %>% 
+    select(total) %>% 
+    bind_cols(dfMood, .)
+  
+}
+
+moodwatchmean <- function(dfMood, dfWatch){
+  
+  full_join(dfMood, dfWatch, by = "startdate") %>% 
+    arrange(startdate) %>% 
+    fill(id, level, .direction = "up") %>% 
+    group_by(id, level) %>% 
+    summarize(total = sum(total, na.rm = TRUE)) %>% #should be mean instead of sum here
+    na.omit() %>%
+    ungroup() %>% 
+    select(total) %>% 
+    bind_cols(dfMood, .)
+  
 }
