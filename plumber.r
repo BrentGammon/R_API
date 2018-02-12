@@ -30,7 +30,7 @@ function(dataset1,
          parameter2,
          duration) {
   options(scipen=999)
-  
+  print('hello world')
   conv <- as.data.frame(dataset1)
   conv2 <- as.data.frame(dataset2)
 
@@ -60,18 +60,14 @@ function(dataset1,
     df40 <- sumtotal(conv2, '30 days')
   }
   
-  
   df100 <- df10[(df10$hour %in% df1$hour), ]
   df200 <- df1[(df1$hour %in% df10$hour), ]
-
 
   df300 <- df20[(df20$hour %in% df2$hour), ]
   df400 <- df2[(df2$hour %in% df20$hour), ]
 
-
   df500 <- df30[(df30$hour %in% df3$hour), ]
   df600 <- df3[(df3$hour %in% df30$hour), ]
-
 
   df700 <- df40[(df40$hour %in% df4$hour), ]
   df800 <- df4[(df4$hour %in% df40$hour), ]
@@ -98,6 +94,9 @@ function(dataset1,
 
   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
 }
+
+
+
 
 #' Infomation about dataset 1 and 2 
 #' @param dataset1 The first dataset  
@@ -292,16 +291,17 @@ sumtotal <- function(conv, duration1){
   conv %>%
     mutate(startdate = ymd_hms(startdate)) %>%
     mutate(total = as.numeric(total)) %>%
-    mutate(month_name = month(startdate, label = TRUE)) %>%
+    mutate(month_name = month(startdate)) %>%
     group_by(hour = floor_date(startdate, duration1)) %>%
     summarize(total = sum(total))
 }
 
 meantotal <- function(conv, duration1){
+  print(duration1)
   conv %>%
     mutate(startdate = ymd_hms(startdate)) %>%
     mutate(total = as.numeric(total)) %>%
-    mutate(month_name = month(startdate, label = TRUE)) %>%
+    mutate(month_name = month(startdate)) %>%
     group_by(hour = floor_date(startdate, duration1)) %>%
     summarize(total = mean(total))
 }
