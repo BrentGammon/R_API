@@ -96,11 +96,94 @@ function(dataset1,
 }
 
 
-#' @post /userAverages
-function(){
+#' information about mood and watch data
+#' @param dataset1 The first dataset  
+#' @param parameter1 The name of datase1
+#' @param parameter2 The name of dataset2
+#' @post /datasetInformationMoodWatch
+function(dataset1,parameter1,parameter2){
+  hourplotMatrix <- matrix(0,length(dataset1$hourData),2)
+  threehourplotMatrix <- matrix(0,length(dataset1$threeHourData),2)
+  sixhourplotMatrix <- matrix(0,length(dataset1$sixHourData),2)
+  twelvehourplotMatrix <- matrix(0,length(dataset1$twelveHourData),2)
+  
+  counter <- 1
+  for(item in dataset1$hourData){
+    #View(item)
+    hourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    hourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
+  counter <- 1
+  for(item in dataset1$threeHourData){
+    #View(item)
+    threehourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    threehourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
+  counter <- 1
+  for(item in dataset1$sixHourData){
+    #View(item)
+    sixhourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    sixhourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
+  counter <- 1
+  for(item in dataset1$twelveHourData){
+    #View(item)
+    twelvehourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    twelvehourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
 
   
+  if(parameter1 == 'heartrate' || parameter1 == 'sleepheartrate'){
+    #mean
+    hourDataWatch <- mean(hourplotMatrix[,1])
+    threehourDataWatch <- mean(threehourplotMatrix[,1])
+    sixhourDataWatch <- mean(sixhourplotMatrix[,1])
+    twelvehourDataWatch <- mean(twelvehourplotMatrix[,1])
+  } else {
+    #sum
+    hourDataWatch <- sum(hourplotMatrix[,1])
+    threehourDataWatch <- sum(threehourplotMatrix[,1])
+    sixhourDataWatch <- sum(sixhourplotMatrix[,1])
+    twelvehourDataWatch <- sum(twelvehourplotMatrix[,1])
+  }
+  
+  hourCor <- cor(hourplotMatrix[,1],hourplotMatrix[,2])
+  threehourCor <- cor(threehourplotMatrix[,1],threehourplotMatrix[,2])
+  sixhourCor <- cor(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
+  twelvehourCor <- cor(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
+  hourT <- tTestJSON(hourplotMatrix[,1],hourplotMatrix[,2])
+  threehourT <- tTestJSON(threehourplotMatrix[,1],threehourplotMatrix[,2])
+  sixhourT <- tTestJSON(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
+  twelvehourT <- tTestJSON(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
+  
+  watchSummaryHour <- datasetSummaryMoodWatch(hourplotMatrix[,1])
+  watchSummaryThreeHour <- datasetSummaryMoodWatch(threehourplotMatrix[,1])
+  watchSummarySixHour <- datasetSummaryMoodWatch(sixhourplotMatrix[,1])
+  watchSummaryTwelveHour <- datasetSummaryMoodWatch(twelvehourplotMatrix[,1])
+ 
+  json <- list(hourDataWatch,threehourDataWatch,sixhourDataWatch,twelvehourDataWatch,
+               hourCor,threehourCor,sixhourCor,twelvehourCor,
+               hourT,threehourT,sixhourT,twelvehourT,
+               watchSummaryHour,watchSummaryThreeHour,watchSummarySixHour,watchSummaryTwelveHour)
+  names(json) <- c("hourDataWatch","threehourDataWatch","sixhourDataWatch","twelvehourDataWatch",
+                   "hourCor","threehourCor","sixhourCor","twelvehourCor",
+                   "hourT","threehourT","sixhourT","twelvehourT",
+                   "watchSummaryHour","watchSummaryThreeHour","watchSummarySixHour","watchSummaryTwelveHour")
+  
+  json <- toJSON(json)
 }
+
+
+
+
 
 
 
@@ -174,18 +257,68 @@ function(dataset1,dataset2,parameter1,parameter2){
 #' @post /testendpoint
 #' @png (width = 1000, height = 1000)
 function(dataset1,parameter1,parameter2) {
+  View(dataset1)
+  View(parameter1)
+  View(parameter2)
   options(scipen=999)
   hourplotMatrix <- matrix(0,length(dataset1$hourData),2)
+  threehourplotMatrix <- matrix(0,length(dataset1$threeHourData),2)
+  sixhourplotMatrix <- matrix(0,length(dataset1$sixHourData),2)
+  twelvehourplotMatrix <- matrix(0,length(dataset1$twelveHourData),2)
   
   counter <- 1
   for(item in dataset1$hourData){
     #View(item)
-    hourplotMatrix[counter, 1] <- item$watch
-    hourplotMatrix[counter, 2] <- item$mood
+    hourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    hourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
   }
+  
+  counter <- 1
+  for(item in dataset1$threeHourData){
+    #View(item)
+    threehourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    threehourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
+  counter <- 1
+  for(item in dataset1$sixHourData){
+    #View(item)
+    sixhourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    sixhourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
+  counter <- 1
+  for(item in dataset1$twelveHourData){
+    #View(item)
+    twelvehourplotMatrix[counter, 1] <- as.numeric(item$watch)
+    twelvehourplotMatrix[counter, 2] <- as.numeric(item$mood)
+    counter <- counter + 1
+  }
+  
+  
+   title <-
+    paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
+   attach(mtcars)
+   par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
+   #watch mood
+   plot(hourplotMatrix[,1],hourplotMatrix[,2],type = "p", ann = FALSE)
+   title("1 Hour", xlab = parameter1, ylab = parameter2)
+   
+   plot(threehourplotMatrix[,1],threehourplotMatrix[,2] , type = "p", ann = FALSE)
+   title("3 Hours", xlab = parameter1, ylab = parameter2)
+   
+   plot(sixhourplotMatrix[,1],sixhourplotMatrix[,2], type = "p", ann = FALSE)
+   title("6 Hours", xlab = parameter1, ylab = parameter2)
+   
+   plot(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], type = "p", ann = FALSE)
+   title("12 Hours", xlab = parameter1, ylab = parameter2)
+   
+   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+  
 
-  plot(hourplotMatrix[,1],hourplotMatrix[,2])
   
 }
 
@@ -308,6 +441,17 @@ correlation <- function(dataset1, dataset2) {
   d2 <- as.data.frame(as.numeric(dataset2$total))
   cor(d1, d2)
 }
+
+
+datasetSummaryMoodWatch <- function(dataset) {
+  convJSON <- as.data.frame(as.numeric(dataset))
+  datasetStats <- as.data.frame(summary(convJSON))
+  View(datasetStats)
+  datasetStatsObject<-datasetStats %>%
+    select(Freq)
+  datasetStatsObject 
+}
+
 
 datasetSummary <- function(dataset) {
   convJSON <- as.data.frame(as.numeric(dataset$total))
