@@ -96,6 +96,12 @@ function(dataset1,
 }
 
 
+#' @post /userAverages
+function(){
+
+  
+}
+
 
 
 #' Infomation about dataset 1 and 2 
@@ -151,11 +157,6 @@ function(dataset1,dataset2,parameter1,parameter2){
   df700 <- df40[(df40$hour %in% df4$hour), ]
   df800 <- df4[(df4$hour %in% df40$hour), ]
   
-
- 
- 
-
-
   
   json <- list(datasetSummary(dataset1),datasetSummary(dataset2),correlation(df100,df200),correlation(df300,df400),correlation(df500,df600),correlation(df700,df800),
                tTestJSON(df100$total,df200$total),tTestJSON(df300$total,df400$total),tTestJSON(df500$total,df600$total),tTestJSON(df700$total,df800$total))
@@ -163,6 +164,36 @@ function(dataset1,dataset2,parameter1,parameter2){
   json <- toJSON(json)
   
 }
+
+
+
+#' MoodWatchCorrelation endpoint
+#' @param dataset1 The first dataset
+#' @param parameter1 1st parameter
+#' @param parameter2 2nd parameter
+#' @post /testendpoint
+#' @png (width = 1000, height = 1000)
+function(dataset1,parameter1,parameter2) {
+  options(scipen=999)
+  hourplotMatrix <- matrix(0,length(dataset1$hourData),2)
+  
+  counter <- 1
+  for(item in dataset1$hourData){
+    #View(item)
+    hourplotMatrix[counter, 1] <- item$watch
+    hourplotMatrix[counter, 2] <- item$mood
+    counter <- counter + 1
+  }
+
+  plot(hourplotMatrix[,1],hourplotMatrix[,2])
+  
+}
+
+
+
+
+
+
 
 #' MoodWatchCorrelation endpoint
 #' @param dataset1 The first dataset
