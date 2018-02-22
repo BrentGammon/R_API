@@ -203,7 +203,34 @@ function(dataset1,
 }
 
 
+#' dashboard plot
+#' @param dataset1
+#' @post /dashboardplot
+#' @png
+function(dataset1,parameter1) {
 
+  View(dataset1[[1]]$total)
+  View(as.Date(ymd_hms(dataset1[[1]]$date)))
+  #aggregate on time 
+  View(dataset1)
+  example1 <- aggregate(as.numeric(dataset1[[1]]$total),by=list((as.Date(ymd_hms(dataset1[[1]]$date)))),sum) 
+  example2 <- aggregate(as.numeric(dataset1[[2]]$total),by=list((as.Date(ymd_hms(dataset1[[2]]$date)))),sum) 
+  #View(example2)
+  plot(example1, type = 'l', col="red", yaxt='n', xlab = "", ylab = "")
+  #legend('topright', "names(a)[-1]" ,lty=1, col=c('red', 'blue', 'green',' brown'), bty='n', cex=.75)
+  par(new=TRUE)
+  plot(example2, type = 'l', col="blue", yaxt='n', xlab = "", ylab = "")
+  legend('topright', legend=c("Line 1", "Line 2"),
+         col=c("red", "blue"), lty=1:2, cex=0.8)
+  #lines(example2,col="green")
+ 
+  #for(item in dataset1){
+    
+  #}
+   # plot(dataset[0],hourplotMatrix[,2],type = "p", ann = FALSE)
+  #plot(dataset1[[1]]$total, ymd_hms(dataset1[[1]]$date),type = "p", ann = FALSE)
+  
+}
 
 
 
