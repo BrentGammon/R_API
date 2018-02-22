@@ -202,34 +202,76 @@ function(dataset1,
     
 }
 
+hexColor <- function(key){
+  hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933')
+  colors <- matrix(hex, nrow=8,ncol=2, byrow = TRUE)
+  color <- ''
+  counter <- 1
+  for(item in colors) {
+    if(item == key) {
+      color <- colors[counter,2]
+    }
+    counter <- counter +1
+  }
+  color
+}
+
+legendColors <-function(parameters) {
+  hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933')
+  colors <- matrix(hex, nrow=8,ncol=2, byrow = TRUE)
+  data <- matrix(0,length(parameters),1)
+  counter <- 1
+  
+  print(parameters)
+  for(p in parameters){
+   # print(length(colors[1,]))
+    colorCounter <- 1
+    for(c in colors[,1]){
+      #print(c)
+      if(p == c){
+        print("===================")
+        print(p)
+        print(colors[colorCounter,2])
+        print("===================")
+        data[counter] <- colors[colorCounter,2]
+      }
+      colorCounter <- colorCounter +1
+    }
+    counter <- counter +1
+  }
+
+  View(data)
+  data
+}
 
 #' dashboard plot
 #' @param dataset1
 #' @post /dashboardplot
-#' @png
+#' @png (width = 600, height = 600)
 function(dataset1,parameter1) {
 
-  View(dataset1[[1]]$total)
-  View(as.Date(ymd_hms(dataset1[[1]]$date)))
+  #View(dataset1[[1]]$total)
+  #View(as.Date(ymd_hms(dataset1[[1]]$date)))
   #aggregate on time 
-  View(dataset1)
-  example1 <- aggregate(as.numeric(dataset1[[1]]$total),by=list((as.Date(ymd_hms(dataset1[[1]]$date)))),sum) 
-  example2 <- aggregate(as.numeric(dataset1[[2]]$total),by=list((as.Date(ymd_hms(dataset1[[2]]$date)))),sum) 
-  #View(example2)
-  plot(example1, type = 'l', col="red", yaxt='n', xlab = "", ylab = "")
-  #legend('topright', "names(a)[-1]" ,lty=1, col=c('red', 'blue', 'green',' brown'), bty='n', cex=.75)
-  par(new=TRUE)
-  plot(example2, type = 'l', col="blue", yaxt='n', xlab = "", ylab = "")
-  legend('topright', legend=c("Line 1", "Line 2"),
-         col=c("red", "blue"), lty=1:2, cex=0.8)
-  #lines(example2,col="green")
+  #View(dataset1)
+  #View(dataset1)
+  #data <- matrix(0,length(dataset1),2)
+  #View(data)
  
-  #for(item in dataset1){
-    
-  #}
-   # plot(dataset[0],hourplotMatrix[,2],type = "p", ann = FALSE)
-  #plot(dataset1[[1]]$total, ymd_hms(dataset1[[1]]$date),type = "p", ann = FALSE)
-  
+ 
+  hex <- hexColor(parameter1[1])
+  View(hex)
+  plot(aggregate(as.numeric(dataset1[[1]]$total),by=list((as.Date(ymd_hms(dataset1[[1]]$date)))),sum), type = 'l', col=hex, yaxt='n', xlab = "", ylab = "",  lwd=10)
+  par(new=TRUE)
+  counter <- 1
+  for(item in dataset1){
+    hex <- hexColor(parameter1[counter])
+    plot(aggregate(as.numeric(dataset1[[counter]]$total),by=list((as.Date(ymd_hms(dataset1[[counter]]$date)))),sum), type = 'l', col=hex, yaxt='n', xaxt='n',xlab = "", ylab = "",  lwd=10)
+    par(new=TRUE)
+    counter <- counter + 1
+  }
+  legend('topright', legend=parameter1,col=legendColors(parameter1), lty=1:2, cex=0.8)
+
 }
 
 
