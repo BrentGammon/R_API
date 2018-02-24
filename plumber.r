@@ -203,8 +203,9 @@ function(dataset1,
 }
 
 hexColor <- function(key){
-  hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933')
-  colors <- matrix(hex, nrow=8,ncol=2, byrow = TRUE)
+  hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933',
+           'stresslevel', '#33cccc', "tirednesslevel",'#3366ff' ,"activitylevel", '#ff5050',"healthinesslevel",'#ffff00')
+  colors <- matrix(hex, nrow=12,ncol=2, byrow = TRUE)
   color <- ''
   counter <- 1
   for(item in colors) {
@@ -213,12 +214,17 @@ hexColor <- function(key){
     }
     counter <- counter +1
   }
+  print("================")
+  print(color)
+  print("================")
   color
 }
 
 legendColors <-function(parameters) {
-  hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933')
-  colors <- matrix(hex, nrow=8,ncol=2, byrow = TRUE)
+  View(parameters)
+  hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933', 
+           'stresslevel', '#33cccc', "tirednesslevel",'#3366ff' ,"activitylevel", '#ff5050',"healthinesslevel",'#ffff00')
+  colors <- matrix(hex, nrow=12,ncol=2, byrow = TRUE)
   data <- matrix(0,length(parameters),1)
   counter <- 1
   
@@ -229,10 +235,6 @@ legendColors <-function(parameters) {
     for(c in colors[,1]){
       #print(c)
       if(p == c){
-        print("===================")
-        print(p)
-        print(colors[colorCounter,2])
-        print("===================")
         data[counter] <- colors[colorCounter,2]
       }
       colorCounter <- colorCounter +1
@@ -244,29 +246,40 @@ legendColors <-function(parameters) {
   data
 }
 
+dashboardPlot <-function(parameter, total,date, index){
+  hex <- hexColor(parameter)
+  if(parameter == 'activeenergyburned' ||parameter == 'deepsleep' || parameter == 'flightsclimbed' ||
+     parameter == 'sleep' || parameter == 'stepcounter' || parameter == 'walkingrunningdistance' ) {
+    #sum
+    if(index == 1){
+      #first plot display time frame 
+      plot(aggregate(as.numeric(total),by=list((as.Date(ymd_hms(date)))),sum), type = 'l', col=hex, yaxt='n', xlab = "", ylab = "",  lwd=5)
+      
+    } else {
+      plot(aggregate(as.numeric(total),by=list((as.Date(ymd_hms(date)))),sum), type = 'l', col=hex, yaxt='n', xaxt='n', xlab = "", ylab = "",  lwd=5)
+    }
+   
+  }
+  else{
+    #mean
+    if(index == 1){
+    plot(aggregate(as.numeric(total),by=list((as.Date(ymd_hms(date)))),mean), type = 'l', col=hex, yaxt='n', xlab = "", ylab = "",  lwd=5)
+    } else {
+      plot(aggregate(as.numeric(total),by=list((as.Date(ymd_hms(date)))),mean), type = 'l', col=hex,  yaxt='n', xaxt='n', xlab = "", ylab = "",  lwd=5)
+    }
+  }
+}
+
+
 #' dashboard plot
 #' @param dataset1
 #' @post /dashboardplot
-#' @png (width = 600, height = 600)
+#' @png 
 function(dataset1,parameter1) {
-
-  #View(dataset1[[1]]$total)
-  #View(as.Date(ymd_hms(dataset1[[1]]$date)))
-  #aggregate on time 
-  #View(dataset1)
-  #View(dataset1)
-  #data <- matrix(0,length(dataset1),2)
-  #View(data)
- 
- 
-  hex <- hexColor(parameter1[1])
-  View(hex)
-  plot(aggregate(as.numeric(dataset1[[1]]$total),by=list((as.Date(ymd_hms(dataset1[[1]]$date)))),sum), type = 'l', col=hex, yaxt='n', xlab = "", ylab = "",  lwd=10)
   par(new=TRUE)
   counter <- 1
   for(item in dataset1){
-    hex <- hexColor(parameter1[counter])
-    plot(aggregate(as.numeric(dataset1[[counter]]$total),by=list((as.Date(ymd_hms(dataset1[[counter]]$date)))),sum), type = 'l', col=hex, yaxt='n', xaxt='n',xlab = "", ylab = "",  lwd=10)
+    dashboardPlot(parameter1[counter],dataset1[[counter]]$total, dataset1[[counter]]$date, counter)
     par(new=TRUE)
     counter <- counter + 1
   }
