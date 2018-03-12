@@ -48,7 +48,6 @@ function(dataset1,
   conv8 <- as.data.frame(dataset8) #walkingrunningdistance
   conv9 <- as.data.frame(dataset9) #userinput
 
-  View(conv9)
 
   
   df1 <- sumtotal(conv, '1 day') #activeenergyburned
@@ -60,14 +59,6 @@ function(dataset1,
   df7 <- sumtotal(conv7, '1 day') #stepcounter
   df8 <- sumtotal(conv8, '1 day') #walkingrunningdistance
   
-  View(df1)
-  View(df2)
-  View(df3)
-  View(df4)
-  View(df5)
-  View(df6)
-  View(df7)
-  View(df8)
 
   df10 <- df1 %>%
     select(total, hour) %>%
@@ -221,7 +212,6 @@ hexColor <- function(key){
 }
 
 legendColors <-function(parameters) {
-  View(parameters)
   hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933', 
            'stresslevel', '#33cccc', "tirednesslevel",'#3366ff' ,"activitylevel", '#ff5050',"healthinesslevel",'#ffff00')
   colors <- matrix(hex, nrow=12,ncol=2, byrow = TRUE)
@@ -242,7 +232,7 @@ legendColors <-function(parameters) {
     counter <- counter +1
   }
 
-  View(data)
+
   data
 }
 
@@ -296,7 +286,7 @@ function(dataset1,parameter1) {
 #' @param parameter2 2nd parameter
 #' @param duration Month, Week, Day, Hours
 #' @post /correlation
-#' @png (width = 1000, height = 1000)
+#' @png (width = 800, height = 800)
 function(dataset1,
          dataset2,
          parameter1,
@@ -340,7 +330,7 @@ function(dataset1,
     }
   }else if(parameter1 %in% userinputvalues && parameter2 %in% userinputvalues){
     #useruser
-    
+    print("hello world")
     df1 <- meantotal(conv, 'hour')
     df2 <- meantotal(conv, '1 day')
     df3 <- meantotal(conv, '7 days')
@@ -367,50 +357,25 @@ function(dataset1,
   
   
   title <-
-    paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
+    paste("Correlation between", parameter2, "and", parameter1, "over ...", sep = " ")
   
   attach(mtcars)
   par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
   
   plot(df100$total, df200$total, type = "p", ann = FALSE)
-  title("1 Hour", xlab = parameter1, ylab = parameter2)
+  title("1 Hour", xlab = parameter2, ylab = parameter1)
 
   plot(df300$total, df400$total, type = "p", ann = FALSE)
-  title("1 Day", xlab = parameter1, ylab = parameter2)
+  title("1 Day",  xlab = parameter2, ylab = parameter1)
 
   plot(df500$total, df600$total, type = "p", ann = FALSE)
-  title("1 Week", xlab = parameter1, ylab = parameter2)
+  title("1 Week",  xlab = parameter2, ylab = parameter1)
 
   plot(df700$total, df800$total, type = "p", ann = FALSE)
-  title("1 Month", xlab = parameter1, ylab = parameter2)
+  title("1 Month",  xlab = parameter2, ylab = parameter1)
 
   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
-  
-  
-  # if(parameter1 == 'heartrate' || parameter1 == 'sleepheartrate'){
-  #   df1 <- meantotal(conv, 'hour')
-  #   df2 <- meantotal(conv, '1 day')
-  #   df3 <- meantotal(conv, '7 days')
-  #   df4 <- meantotal(conv, '30 days')
-  # }else{
-  #   df1 <- sumtotal(conv, 'hour')
-  #   df2 <- sumtotal(conv, '1 day')
-  #   df3 <- sumtotal(conv, '7 days')
-  #   df4 <- sumtotal(conv, '30 days')
-  # }
-  # 
-  # if(parameter2 == 'heartrate' || parameter2 == 'sleepheartrate'){
-  #   df10 <- meantotal(conv2,'hour')
-  #   df20 <- meantotal(conv2, '1 day')
-  #   df30 <- meantotal(conv2, '7 days')
-  #   df40 <- meantotal(conv2, '30 days')
-  #   
-  # }else{
-  #   df10 <- sumtotal(conv2, 'hour')
-  #   df20 <- sumtotal(conv2, '1 day')
-  #   df30 <- sumtotal(conv2, '7 days')
-  #   df40 <- sumtotal(conv2, '30 days')
-  # }
+
   
 }
 
@@ -515,8 +480,7 @@ function(dataset1,parameter1,parameter2){
 function(dataset1,dataset2,parameter1,parameter2){
   conv <- as.data.frame(dataset1)
   conv2 <- as.data.frame(dataset2)
-  View(conv)
-  View(conv2)
+
   
   if(parameter1 == 'heartrate' || parameter1 == 'sleepheartrate'){
     df1 <- meantotal(conv, 'hour')
@@ -560,25 +524,50 @@ function(dataset1,dataset2,parameter1,parameter2){
   df800 <- df4[(df4$hour %in% df40$hour), ]
   
   
-  json <- list(datasetSummary(dataset1),datasetSummary(dataset2),correlation(df100,df200),correlation(df300,df400),correlation(df500,df600),correlation(df700,df800),
-               tTestJSON(df100$total,df200$total),tTestJSON(df300$total,df400$total),tTestJSON(df500$total,df600$total),tTestJSON(df700$total,df800$total))
-  names(json) <- c("dataset1", "dataset2","hourCor","1dayCor","7daysCor","30daysCor","hourTest","1dayTest","7daysTest","30daysTest")
+  
+  json <- list(datasetSummary(dataset1),
+               datasetSummary(dataset2),
+               correlation(df100,df200),
+               correlation(df300,df400),
+               correlation(df500,df600),
+               correlation(df700,df800))#,
+  json <- c(json,datasetSizeCheckTTest(df100$total,df200$total,df300$total,df400$total,df500$total,df600$total,df700$total,df800$total))
   json <- toJSON(json)
   
 }
 
-
+datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8){
+  data <- list()
+  if(length(d1) > 1 && length(d2) > 1){
+    listData <- list(tTestJSON(d1,d2))
+    names(listData) <- ("hourTest")
+    data <- c(data, listData)
+  }
+  if(length(d3) > 1 && length(d4) > 1){
+    listData <- list(tTestJSON(d3,d4))
+    names(listData) <- ("1dayTest")
+    data <- c(data, listData)
+  }
+  if(length(d5) > 1 && length(d6) > 1){
+    listData <- list(tTestJSON(d5,d6))
+    names(listData) <- ("7daysTest")
+    data <- c(data, listData)
+  }
+  if(length(d7) > 1 && length(d8) > 1){
+    listData <- list(tTestJSON(d7,d8))
+    names(listData) <- ("30daysTest")
+    data <- c(data, listData)
+  }
+  data
+}
 
 #' MoodWatchCorrelation endpoint
 #' @param dataset1 The first dataset
 #' @param parameter1 1st parameter
 #' @param parameter2 2nd parameter
 #' @post /testendpoint
-#' @png (width = 1000, height = 1000)
+#' @png (width = 800, height = 800)
 function(dataset1,parameter1,parameter2) {
-  View(dataset1)
-  View(parameter1)
-  View(parameter2)
   options(scipen=999)
   hourplotMatrix <- matrix(0,length(dataset1$hourData),2)
   threehourplotMatrix <- matrix(0,length(dataset1$threeHourData),2)
@@ -587,7 +576,6 @@ function(dataset1,parameter1,parameter2) {
   
   counter <- 1
   for(item in dataset1$hourData){
-    #View(item)
     hourplotMatrix[counter, 1] <- as.numeric(item$watch)
     hourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -595,7 +583,6 @@ function(dataset1,parameter1,parameter2) {
   
   counter <- 1
   for(item in dataset1$threeHourData){
-    #View(item)
     threehourplotMatrix[counter, 1] <- as.numeric(item$watch)
     threehourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -603,7 +590,6 @@ function(dataset1,parameter1,parameter2) {
   
   counter <- 1
   for(item in dataset1$sixHourData){
-    #View(item)
     sixhourplotMatrix[counter, 1] <- as.numeric(item$watch)
     sixhourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -611,7 +597,6 @@ function(dataset1,parameter1,parameter2) {
   
   counter <- 1
   for(item in dataset1$twelveHourData){
-    #View(item)
     twelvehourplotMatrix[counter, 1] <- as.numeric(item$watch)
     twelvehourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -653,7 +638,7 @@ function(dataset1,parameter1,parameter2) {
 #' @param parameter1 1st parameter
 #' @param parameter2 2nd parameter
 #' @post /moodwatchcorrelation
-#' @png (width = 1000, height = 1000)
+#' @png (width = 800, height = 800)
 function(dataset1,
          dataset2,
          parameter1,
@@ -662,9 +647,6 @@ function(dataset1,
   
      conv <- as.data.frame(dataset1)
      conv2 <- as.data.frame(dataset2)
-     View(conv)
-     View(conv2)
-  
   userinputvalues <- c('stresslevel','tirednesslevel','activitylevel','healthinesslevel')
   watchinputvalues <- c('activeenergyburned','deepsleep','flightsclimbed','heartrate','sleep','sleepheartrate','stepcounter','walkingrunningdistance')
   heartratevalues <- c('heartrate','sleepheartrate')
@@ -726,90 +708,6 @@ function(dataset1,
   title("1 Month", xlab = parameter1, ylab = parameter2)
   
   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
-  
-  
-  # if(parameter1 %in% moodvalues){
-  #   #dataset1 represents mood data from express
-  #   #dataset2 represents watch data from express
-  #   
-  #   conv <- as.data.frame(dataset1)
-  #   conv2 <- as.data.frame(dataset2)
-  #   View(conv)
-  #   View(conv2)
-  #   
-  #   #dfMoodData and dfWatchData are created from the formatted datasets coming from express
-  #   
-  #   dfMoodData <- conv %>%
-  #     mutate(startdate = ymd_hms(startdate)) %>%
-  #     select(startdate, id, level)
-  #   
-  #   dfWatchData <- conv2 %>%
-  #     mutate(startdate = ymd_hms(startdate)) %>%
-  #     mutate(total = as.numeric(total)) %>%
-  #     select(startdate, total)  
-  #   
-  #   #moodwatchmean and moodwatchsum aggregate the watch data using the mood submission timestamps
-  #   #heartrate values are aggregated by mean
-  #   #dfAggrMoodWatch is a single dataframe that consists of the full join of mood data and aggregated watch data
-  #   #by mood submission timestamps
-  #   
-  #   meanparameters <- c('heartrate','sleepheartrate')
-  #   
-  #     if(parameter2 %in% meanparameters || parameter2 %in% meanparameters){
-  #       dfAggrMoodWatch <- moodwatchmean(dfMoodData, dfWatchData)  
-  #     }else{
-  #       dfAggrMoodWatch <- moodwatchsum(dfMoodData, dfWatchData)
-  #     }
-  #   
-  #   #dfAggrMoodWatch is used to create dfAggrMood and dfAggrWatch. They consist of the useful columns
-  #   #if further aggregation is required
-  #   
-  #   dfAggrMood <- dfAggrMoodWatch %>%
-  #     select(startdate, level, total)
-  #   
-  #   dfAggrWatch <- dfAggrMoodWatch %>%
-  #     select(startdate, total)
-  #   
-  #   plot(dfAggrMood$level, dfAggrWatch$total, type = "p", ann = FALSE)
-  #   
-  # }else{
-  #   #if parameter 1 was not included in the moodvalues list, parameter 2 is a mood values,
-  #   #therefore dataset1 (which is mood data) is assigned to conv2
-  #   #dataset2 (watch data)  is assigned to conv
-  #   
-  #   conv <- as.data.frame(dataset2) 
-  #   conv2 <- as.data.frame(dataset1)
-  #   
-  #   #dfMoodData and dfWatchData are created from the formatted datasets coming from express
-  #   
-  #   dfMoodData <- conv2 %>%
-  #     mutate(startdate = ymd_hms(startdate)) %>%
-  #     select(startdate, id, level)
-  #   
-  #   dfWatchData <- conv %>%
-  #     mutate(startdate = ymd_hms(startdate)) %>%
-  #     mutate(total = as.numeric(total)) %>%
-  #     select(startdate, total)  
-  #   
-  #   meanparameters <- c('heartrate','sleepheartrate')
-  #   
-  #     if(parameter1 %in% meanparameters || parameter1 %in% meanparameters){
-  #       dfAggrMoodWatch <- moodwatchmean(dfMoodData, dfWatchData)
-  #     }else{
-  #       dfAggrMoodWatch <- moodwatchsum(dfMoodData, dfWatchData)
-  #     }
-  #   
-  #   dfAggrMood <- dfAggrMoodWatch %>%
-  #     select(startdate, level)
-  #   
-  #   dfAggrWatch <- dfAggrMoodWatch %>%
-  #     select(startdate, total)
-  #   
-  #   plot(dfAggrMood$level, dfAggrWatch$total, type = "p", ann = FALSE)
-  #   
-  # }
-  
-  
 }
 
 
@@ -832,7 +730,6 @@ correlation <- function(dataset1, dataset2) {
 datasetSummaryMoodWatch <- function(dataset) {
   convJSON <- as.data.frame(as.numeric(dataset))
   datasetStats <- as.data.frame(summary(convJSON))
-  View(datasetStats)
   datasetStatsObject<-datasetStats %>%
     select(Freq)
   datasetStatsObject 
@@ -842,7 +739,6 @@ datasetSummaryMoodWatch <- function(dataset) {
 datasetSummary <- function(dataset) {
   convJSON <- as.data.frame(as.numeric(dataset$total))
   datasetStats <- as.data.frame(summary(convJSON))
-  View(datasetStats)
   datasetStatsObject<-datasetStats %>%
     select(Freq)
   datasetStatsObject 
