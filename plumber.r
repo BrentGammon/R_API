@@ -27,7 +27,7 @@ cors <- function(res) {
 #' @param dataset8 The eigth dataset
 #' @param dataset9 The ninth dataset
 #' @post /dashboardcharts
-#' @png (width = 1000, height = 1000)
+#' @png (width = 1500, height = 1500)
 function(dataset1,
          dataset2,
          dataset3,
@@ -63,56 +63,72 @@ function(dataset1,
   df10 <- df1 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Active Energy Burned")
   
   df20 <- df2 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Deep Sleep")
   
   df30 <- df3 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Flights Climbed")
   
   df40 <- df4 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("HeartRate")
   
   df50 <- df5 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Sleep")
   
   df60 <- df6 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Sleep Heartrate")
   
   df70 <- df7 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Step Counter")
   
   df80 <- df8 %>%
     select(total, hour) %>%
     ggplot(aes(x=hour, y=total))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Walking Running Distance")
   
@@ -120,7 +136,9 @@ function(dataset1,
     mutate(startdate = ymd_hms(startdate)) %>%
     select(stresslevel, startdate) %>%
     ggplot(aes(x=startdate, y=stresslevel))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Stress Level")
   
@@ -128,7 +146,9 @@ function(dataset1,
     mutate(startdate = ymd_hms(startdate)) %>%
     select(tirednesslevel, startdate) %>%
     ggplot(aes(x=startdate, y=tirednesslevel))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Tiredness Level")
   
@@ -136,7 +156,9 @@ function(dataset1,
     mutate(startdate = ymd_hms(startdate)) %>%
     select(healthinesslevel, startdate) %>%
     ggplot(aes(x=startdate, y=healthinesslevel))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Healthiness Level")
   
@@ -144,50 +166,52 @@ function(dataset1,
     mutate(startdate = ymd_hms(startdate)) %>%
     select(activitylevel, startdate) %>%
     ggplot(aes(x=startdate, y=activitylevel))+
-    geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+    geom_line(color = "#000000", alpha=0.7) + 
+    geom_point(color = "#FF6666", alpha=0.7) +
     xlab("Date") +
     ylab("Activity Level")
   
-  dfscatstress <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(stresslevel, startdate) %>%
-    ggplot(aes(x=startdate, y=stresslevel))+
-    geom_point(aes(y = stresslevel) ,colour = "#FFA500", alpha=0.7) +
-    geom_line(alpha=0.5) +
-    xlab("Date") +
-    ylab("Stress Level")
+  # dfscatstress <- conv9 %>%
+  #   mutate(startdate = ymd_hms(startdate)) %>%
+  #   select(stresslevel, startdate) %>%
+  #   ggplot(aes(x=startdate, y=stresslevel))+
+  #   geom_point(aes(y = stresslevel) ,colour = "#FFA500", alpha=0.7) +
+  #   geom_line(alpha=0.5) +
+  #   xlab("Date") +
+  #   ylab("Stress Level")
+  # 
+  # dfscattired <- conv9 %>%
+  #   mutate(startdate = ymd_hms(startdate)) %>%
+  #   select(tirednesslevel, startdate) %>%
+  #   ggplot(aes(x=startdate, y=tirednesslevel))+
+  #   geom_point(aes(y = tirednesslevel) ,colour = "#FFA500", alpha=0.7) +
+  #   geom_line(alpha=0.5) +
+  #   xlab("Date") +
+  #   ylab("Tiredness Level")
+  # 
+  # dfscathealth <- conv9 %>%
+  #   mutate(startdate = ymd_hms(startdate)) %>%
+  #   select(healthinesslevel, startdate) %>%
+  #   ggplot(aes(x=startdate, y=healthinesslevel))+
+  #   geom_point(aes(y = healthinesslevel) ,colour = "#FFA500", alpha=0.7) +
+  #   geom_line(alpha=0.5) +
+  #   xlab("Date") +
+  #   ylab("Healthiness Level")
+  # 
+  # dfscatactive <- conv9 %>%
+  #   mutate(startdate = ymd_hms(startdate)) %>%
+  #   select(activitylevel, startdate) %>%
+  #   ggplot(aes(x=startdate, y=activitylevel))+
+  #   geom_point(aes(y = activitylevel) ,colour = "#FFA500", alpha=0.7) +
+  #   geom_line(alpha=0.5) +
+  #   xlab("Date") +
+  #   ylab("Activity Level")
   
-  dfscattired <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(tirednesslevel, startdate) %>%
-    ggplot(aes(x=startdate, y=tirednesslevel))+
-    geom_point(aes(y = tirednesslevel) ,colour = "#FFA500", alpha=0.7) +
-    geom_line(alpha=0.5) +
-    xlab("Date") +
-    ylab("Tiredness Level")
   
-  dfscathealth <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(healthinesslevel, startdate) %>%
-    ggplot(aes(x=startdate, y=healthinesslevel))+
-    geom_point(aes(y = healthinesslevel) ,colour = "#FFA500", alpha=0.7) +
-    geom_line(alpha=0.5) +
-    xlab("Date") +
-    ylab("Healthiness Level")
-  
-  dfscatactive <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(activitylevel, startdate) %>%
-    ggplot(aes(x=startdate, y=activitylevel))+
-    geom_point(aes(y = activitylevel) ,colour = "#FFA500", alpha=0.7) +
-    geom_line(alpha=0.5) +
-    xlab("Date") +
-    ylab("Activity Level")
-  
-  
-  dfA <- ggarrange(df10, df20, df30, df40, df50, df60, df70, df80, dfstress, dftired, dfhealth, dfactive, dfscatstress, dfscattired, dfscathealth, dfscatactive
+  dfA <- ggarrange(df10, df20, df30, df40, df50, df60, df70, df80, dfstress, dftired, dfhealth, dfactive
                    + rremove("x.text"),
-            ncol = 4, nrow = 4)
+            ncol = 4, nrow = 3)
   
   plot(dfA)
     
