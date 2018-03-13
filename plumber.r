@@ -417,7 +417,6 @@ function(dataset1,parameter1,parameter2){
   
   counter <- 1
   for(item in dataset1$hourData){
-    #View(item)
     hourplotMatrix[counter, 1] <- as.numeric(item$watch)
     hourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -425,7 +424,6 @@ function(dataset1,parameter1,parameter2){
   
   counter <- 1
   for(item in dataset1$threeHourData){
-    #View(item)
     threehourplotMatrix[counter, 1] <- as.numeric(item$watch)
     threehourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -467,25 +465,49 @@ function(dataset1,parameter1,parameter2){
   threehourCor <- cor(threehourplotMatrix[,1],threehourplotMatrix[,2])
   sixhourCor <- cor(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
   twelvehourCor <- cor(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
-  hourT <- tTestJSON(hourplotMatrix[,1],hourplotMatrix[,2])
-  threehourT <- tTestJSON(threehourplotMatrix[,1],threehourplotMatrix[,2])
-  sixhourT <- tTestJSON(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
-  twelvehourT <- tTestJSON(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
+  # hourT <- tTestJSON(hourplotMatrix[,1],hourplotMatrix[,2])
+  # threehourT <- tTestJSON(threehourplotMatrix[,1],threehourplotMatrix[,2])
+  # sixhourT <- tTestJSON(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
+  # twelvehourT <- tTestJSON(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
   
   watchSummaryHour <- datasetSummaryMoodWatch(hourplotMatrix[,1])
   watchSummaryThreeHour <- datasetSummaryMoodWatch(threehourplotMatrix[,1])
   watchSummarySixHour <- datasetSummaryMoodWatch(sixhourplotMatrix[,1])
   watchSummaryTwelveHour <- datasetSummaryMoodWatch(twelvehourplotMatrix[,1])
  
-  json <- list(hourDataWatch,threehourDataWatch,sixhourDataWatch,twelvehourDataWatch,
-               hourCor,threehourCor,sixhourCor,twelvehourCor,
-               hourT,threehourT,sixhourT,twelvehourT,
-               watchSummaryHour,watchSummaryThreeHour,watchSummarySixHour,watchSummaryTwelveHour)
-  names(json) <- c("hourDataWatch","threehourDataWatch","sixhourDataWatch","twelvehourDataWatch",
-                   "hourCor","threehourCor","sixhourCor","twelvehourCor",
-                   "hourT","threehourT","sixhourT","twelvehourT",
-                   "watchSummaryHour","watchSummaryThreeHour","watchSummarySixHour","watchSummaryTwelveHour")
-  
+  json <- list(hourDataWatch,
+               threehourDataWatch,
+               sixhourDataWatch,
+               twelvehourDataWatch,
+               hourCor,
+               threehourCor,
+               sixhourCor,
+               twelvehourCor,
+               # hourT,
+               # threehourT,
+               # sixhourT,
+               # twelvehourT,
+               watchSummaryHour,
+               watchSummaryThreeHour,
+               watchSummarySixHour,
+               watchSummaryTwelveHour)
+  names(json) <- c("hourDataWatch",
+                   "threehourDataWatch",
+                   "sixhourDataWatch",
+                   "twelvehourDataWatch",
+                   "hourCor",
+                   "threehourCor",
+                   "sixhourCor",
+                   "twelvehourCor",
+                   # "hourT",
+                   # "threehourT",
+                   # "sixhourT",
+                   # "twelvehourT",
+                   "watchSummaryHour",
+                   "watchSummaryThreeHour",
+                   "watchSummarySixHour",
+                   "watchSummaryTwelveHour")
+  json <- c(json,datasetSizeCheckTTest(hourplotMatrix[,1],hourplotMatrix[,2],threehourplotMatrix[,1],threehourplotMatrix[,2],sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], "hourT", "threehourT", "sixhourT", "twelvehourT"))
   json <- toJSON(json)
 }
 
@@ -555,31 +577,31 @@ function(dataset1,dataset2,parameter1,parameter2){
                correlation(df300,df400),
                correlation(df500,df600),
                correlation(df700,df800))#,
-  json <- c(json,datasetSizeCheckTTest(df100$total,df200$total,df300$total,df400$total,df500$total,df600$total,df700$total,df800$total))
+  json <- c(json,datasetSizeCheckTTest(df100$total,df200$total,df300$total,df400$total,df500$total,df600$total,df700$total,df800$total, "hourTest", "1dayTest", "7daysTest", "30daysTest"))
   json <- toJSON(json)
   
 }
 
-datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8){
+datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
   data <- list()
   if(length(d1) > 1 && length(d2) > 1){
     listData <- list(tTestJSON(d1,d2))
-    names(listData) <- ("hourTest")
+    names(listData) <- (key1)
     data <- c(data, listData)
   }
   if(length(d3) > 1 && length(d4) > 1){
     listData <- list(tTestJSON(d3,d4))
-    names(listData) <- ("1dayTest")
+    names(listData) <- (key2)
     data <- c(data, listData)
   }
   if(length(d5) > 1 && length(d6) > 1){
     listData <- list(tTestJSON(d5,d6))
-    names(listData) <- ("7daysTest")
+    names(listData) <- (key3)
     data <- c(data, listData)
   }
   if(length(d7) > 1 && length(d8) > 1){
     listData <- list(tTestJSON(d7,d8))
-    names(listData) <- ("30daysTest")
+    names(listData) <- (key4)
     data <- c(data, listData)
   }
   data
