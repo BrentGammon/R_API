@@ -1,4 +1,6 @@
 # plumber.R
+#r <- plumb('/Users/brentgammon/Desktop/CO600Project/R_API/plumber.r')
+#r$run(port=8000)
 library("ggpubr",warn.conflicts = FALSE)
 library("dplyr",warn.conflicts = FALSE)
 library("lubridate",warn.conflicts = FALSE)
@@ -465,54 +467,107 @@ function(dataset1,parameter1,parameter2){
   threehourCor <- cor(threehourplotMatrix[,1],threehourplotMatrix[,2])
   sixhourCor <- cor(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
   twelvehourCor <- cor(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
-  # hourT <- tTestJSON(hourplotMatrix[,1],hourplotMatrix[,2])
-  # threehourT <- tTestJSON(threehourplotMatrix[,1],threehourplotMatrix[,2])
-  # sixhourT <- tTestJSON(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
-  # twelvehourT <- tTestJSON(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
   
   watchSummaryHour <- datasetSummaryMoodWatch(hourplotMatrix[,1])
   watchSummaryThreeHour <- datasetSummaryMoodWatch(threehourplotMatrix[,1])
   watchSummarySixHour <- datasetSummaryMoodWatch(sixhourplotMatrix[,1])
   watchSummaryTwelveHour <- datasetSummaryMoodWatch(twelvehourplotMatrix[,1])
- 
-  json <- list(hourDataWatch,
-               threehourDataWatch,
-               sixhourDataWatch,
-               twelvehourDataWatch,
-               hourCor,
-               threehourCor,
-               sixhourCor,
-               twelvehourCor,
-               # hourT,
-               # threehourT,
-               # sixhourT,
-               # twelvehourT,
-               watchSummaryHour,
-               watchSummaryThreeHour,
-               watchSummarySixHour,
-               watchSummaryTwelveHour)
-  names(json) <- c("hourDataWatch",
-                   "threehourDataWatch",
-                   "sixhourDataWatch",
-                   "twelvehourDataWatch",
-                   "hourCor",
-                   "threehourCor",
-                   "sixhourCor",
-                   "twelvehourCor",
-                   # "hourT",
-                   # "threehourT",
-                   # "sixhourT",
-                   # "twelvehourT",
-                   "watchSummaryHour",
-                   "watchSummaryThreeHour",
-                   "watchSummarySixHour",
-                   "watchSummaryTwelveHour")
-  json <- c(json,datasetSizeCheckTTest(hourplotMatrix[,1],hourplotMatrix[,2],threehourplotMatrix[,1],threehourplotMatrix[,2],sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], "hourT", "threehourT", "sixhourT", "twelvehourT"))
-  json <- toJSON(json)
+  View(parameter1)
+  View(parameter2)
+  if(parameter1 == 'sleep' || parameter1 == 'deepsleep' || parameter2 == 'sleep' || parameter2 == 'deepsleep'){
+    print("8765432")
+    json <- list(sixhourDataWatch,
+                 twelvehourDataWatch,
+                 sixhourCor,
+                 twelvehourCor,
+                 watchSummarySixHour,
+                 watchSummaryTwelveHour)
+    names(json) <- c("sixhourDataWatch",
+                     "twelvehourDataWatch",
+                     "sixhourCor",
+                     "twelvehourCor",
+                     "watchSummarySixHour",
+                     "watchSummaryTwelveHour")
+    json <- c(json,datasetSizeCheckTTestSleep(sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2],"sixhourT", "twelvehourT"))
+    json <- toJSON(json)
+  } else {
+    json <- list(hourDataWatch,
+                 threehourDataWatch,
+                 sixhourDataWatch,
+                 twelvehourDataWatch,
+                 hourCor,
+                 threehourCor,
+                 sixhourCor,
+                 twelvehourCor,
+                 watchSummaryHour,
+                 watchSummaryThreeHour,
+                 watchSummarySixHour,
+                 watchSummaryTwelveHour)
+    names(json) <- c("hourDataWatch",
+                     "threehourDataWatch",
+                     "sixhourDataWatch",
+                     "twelvehourDataWatch",
+                     "hourCor",
+                     "threehourCor",
+                     "sixhourCor",
+                     "twelvehourCor",
+                     "watchSummaryHour",
+                     "watchSummaryThreeHour",
+                     "watchSummarySixHour",
+                     "watchSummaryTwelveHour")
+    json <- c(json,datasetSizeCheckTTest(hourplotMatrix[,1],hourplotMatrix[,2],threehourplotMatrix[,1],threehourplotMatrix[,2],sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], "hourT", "threehourT", "sixhourT", "twelvehourT"))
+    json <- toJSON(json)
+  }
+  
+
 }
 
 
+datasetUnique <- function(dataset){
+  length(unique(dataset))==1
+}
 
+datasetSizeCheckTTestSleep <- function(d1,d2,d3,d4,key1,key2){
+  data <- list()
+  if((length(d1) > 1 && length(d2) > 1) && (!datasetUnique(d1) || !datasetUnique(d2))){
+    print("not in here")
+    listData <- list(tTestJSON(d1,d2))
+    names(listData) <- (key1)
+    data <- c(data, listData)
+  }
+  if((length(d3) > 1 && length(d4) > 1)  && (!datasetUnique(d3) || !datasetUnique(d4))){
+    print("not in here 2")
+    listData <- list(tTestJSON(d3,d4))
+    names(listData) <- (key2)
+    data <- c(data, listData)
+  }
+  data
+}
+
+datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
+  data <- list()
+  if((length(d1) > 1 && length(d2) > 1) && (!datasetUnique(d1) || !datasetUnique(d2))){
+    listData <- list(tTestJSON(d1,d2))
+    names(listData) <- (key1)
+    data <- c(data, listData)
+  }
+  if((length(d3) > 1 && length(d4) > 1) && (!datasetUnique(d3) || !datasetUnique(d4))){
+    listData <- list(tTestJSON(d3,d4))
+    names(listData) <- (key2)
+    data <- c(data, listData)
+  }
+  if((length(d5) > 1 && length(d6) > 1) && (!datasetUnique(d5) || !datasetUnique(d6))){
+    listData <- list(tTestJSON(d5,d6))
+    names(listData) <- (key3)
+    data <- c(data, listData)
+  }
+  if((length(d7) > 1 && length(d8) > 1) && (!datasetUnique(d7) || !datasetUnique(d8))){
+    listData <- list(tTestJSON(d7,d8))
+    names(listData) <- (key4)
+    data <- c(data, listData)
+  }
+  data
+}
 
 
 
@@ -582,31 +637,6 @@ function(dataset1,dataset2,parameter1,parameter2){
   
 }
 
-datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
-  data <- list()
-  if(length(d1) > 1 && length(d2) > 1){
-    listData <- list(tTestJSON(d1,d2))
-    names(listData) <- (key1)
-    data <- c(data, listData)
-  }
-  if(length(d3) > 1 && length(d4) > 1){
-    listData <- list(tTestJSON(d3,d4))
-    names(listData) <- (key2)
-    data <- c(data, listData)
-  }
-  if(length(d5) > 1 && length(d6) > 1){
-    listData <- list(tTestJSON(d5,d6))
-    names(listData) <- (key3)
-    data <- c(data, listData)
-  }
-  if(length(d7) > 1 && length(d8) > 1){
-    listData <- list(tTestJSON(d7,d8))
-    names(listData) <- (key4)
-    data <- c(data, listData)
-  }
-  data
-}
-
 #' MoodWatchCorrelation endpoint
 #' @param dataset1 The first dataset
 #' @param parameter1 1st parameter
@@ -614,6 +644,7 @@ datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
 #' @post /testendpoint
 #' @png (width = 800, height = 800)
 function(dataset1,parameter1,parameter2) {
+  
   options(scipen=999)
   hourplotMatrix <- matrix(0,length(dataset1$hourData),2)
   threehourplotMatrix <- matrix(0,length(dataset1$threeHourData),2)
@@ -648,9 +679,23 @@ function(dataset1,parameter1,parameter2) {
     counter <- counter + 1
   }
   
-  
+  if(parameter1 == 'sleep' || parameter1 == 'deepsleep' || parameter2 == 'sleep' || parameter2 == 'deepsleep'){
    title <-
     paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
+   attach(mtcars)
+   par(mfrow=c(2,1), mar=c(5,4,6,2), cex=1.5)
+   #watch mood
+   plot(sixhourplotMatrix[,1],sixhourplotMatrix[,2], type = "p", ann = FALSE)
+   title("6 Hours", xlab = parameter1, ylab = parameter2)
+   
+   plot(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], type = "p", ann = FALSE)
+   title("12 Hours", xlab = parameter1, ylab = parameter2)
+   
+   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+   
+  } else {
+   title <-
+     paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
    attach(mtcars)
    par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
    #watch mood
@@ -667,6 +712,7 @@ function(dataset1,parameter1,parameter2) {
    title("12 Hours", xlab = parameter1, ylab = parameter2)
    
    mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+  }
   
 
   
@@ -810,7 +856,6 @@ meantotal <- function(conv, duration1){
 }
 
 moodwatchsum <- function(dfMood, dfWatch){
-  
     full_join(dfMood, dfWatch, by = "startdate") %>% 
     arrange(startdate) %>% 
     fill(id, level, .direction = "up") %>% 
