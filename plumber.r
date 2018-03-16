@@ -381,7 +381,7 @@ function(dataset1,
   
   
   title <-
-    paste("Correlation between", parameter2, "and", parameter1, "over ...", sep = " ")
+    paste("Correlation between", parameter2, "&", parameter1, sep = " ")
   
   attach(mtcars)
   par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
