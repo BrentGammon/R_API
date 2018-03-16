@@ -1,10 +1,13 @@
 # plumber.R
+#r <- plumb('/Users/brentgammon/Desktop/CO600Project/R_API/plumber.r')
+#r$run(port=8000)
 library("ggpubr",warn.conflicts = FALSE)
 library("dplyr",warn.conflicts = FALSE)
 library("lubridate",warn.conflicts = FALSE)
 library("gridExtra",warn.conflicts = FALSE)
 library('ggplot2',warn.conflicts = FALSE)
 library("jsonlite")
+library("gridExtra")
 #install.packages("tidyr")
 library("tidyr",warn.conflicts = FALSE)
 
@@ -47,175 +50,186 @@ function(dataset1,
   conv7 <- as.data.frame(dataset7) #stepcounter
   conv8 <- as.data.frame(dataset8) #walkingrunningdistance
   conv9 <- as.data.frame(dataset9) #userinput
-
-
   
-  df1 <- sumtotal(conv, '1 day') #activeenergyburned
-  df2 <- meantotal(conv2, '1 day') #deepsleep
-  df3 <- sumtotal(conv3, '1 day') #flightsclimbed
-  df4 <- meantotal(conv4, '1 day') #heartrate
-  df5 <- meantotal(conv5, '1 day') #sleep
-  df6 <- meantotal(conv6, '1 day') #sleepheartrate
-  df7 <- sumtotal(conv7, '1 day') #stepcounter
-  df8 <- sumtotal(conv8, '1 day') #walkingrunningdistance
+  plotList <- list()
   
-
-  df10 <- df1 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Active Energy Burned")
-  
-  df20 <- df2 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Deep Sleep")
-  
-  df30 <- df3 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Flights Climbed")
-  
-  df40 <- df4 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("HeartRate")
-  
-  df50 <- df5 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Sleep")
-  
-  df60 <- df6 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Sleep Heartrate")
-  
-  df70 <- df7 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Step Counter")
-  
-  df80 <- df8 %>%
-    select(total, hour) %>%
-    ggplot(aes(x=hour, y=total))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Walking Running Distance")
-  
-  dfstress <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(stresslevel, startdate) %>%
-    ggplot(aes(x=startdate, y=stresslevel))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Stress Level")
-  
-  dftired <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(tirednesslevel, startdate) %>%
-    ggplot(aes(x=startdate, y=tirednesslevel))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Tiredness Level")
-  
-  dfhealth <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(healthinesslevel, startdate) %>%
-    ggplot(aes(x=startdate, y=healthinesslevel))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Healthiness Level")
-  
-  dfactive <- conv9 %>%
-    mutate(startdate = ymd_hms(startdate)) %>%
-    select(activitylevel, startdate) %>%
-    ggplot(aes(x=startdate, y=activitylevel))+
-    #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
-    geom_line(color = "#000000", alpha=0.7) + 
-    geom_point(color = "#FF6666", alpha=0.7) +
-    xlab("Date") +
-    ylab("Activity Level")
-  
-  # dfscatstress <- conv9 %>%
-  #   mutate(startdate = ymd_hms(startdate)) %>%
-  #   select(stresslevel, startdate) %>%
-  #   ggplot(aes(x=startdate, y=stresslevel))+
-  #   geom_point(aes(y = stresslevel) ,colour = "#FFA500", alpha=0.7) +
-  #   geom_line(alpha=0.5) +
-  #   xlab("Date") +
-  #   ylab("Stress Level")
-  # 
-  # dfscattired <- conv9 %>%
-  #   mutate(startdate = ymd_hms(startdate)) %>%
-  #   select(tirednesslevel, startdate) %>%
-  #   ggplot(aes(x=startdate, y=tirednesslevel))+
-  #   geom_point(aes(y = tirednesslevel) ,colour = "#FFA500", alpha=0.7) +
-  #   geom_line(alpha=0.5) +
-  #   xlab("Date") +
-  #   ylab("Tiredness Level")
-  # 
-  # dfscathealth <- conv9 %>%
-  #   mutate(startdate = ymd_hms(startdate)) %>%
-  #   select(healthinesslevel, startdate) %>%
-  #   ggplot(aes(x=startdate, y=healthinesslevel))+
-  #   geom_point(aes(y = healthinesslevel) ,colour = "#FFA500", alpha=0.7) +
-  #   geom_line(alpha=0.5) +
-  #   xlab("Date") +
-  #   ylab("Healthiness Level")
-  # 
-  # dfscatactive <- conv9 %>%
-  #   mutate(startdate = ymd_hms(startdate)) %>%
-  #   select(activitylevel, startdate) %>%
-  #   ggplot(aes(x=startdate, y=activitylevel))+
-  #   geom_point(aes(y = activitylevel) ,colour = "#FFA500", alpha=0.7) +
-  #   geom_line(alpha=0.5) +
-  #   xlab("Date") +
-  #   ylab("Activity Level")
-  
-  
-  dfA <- ggarrange(df10, df20, df30, df40, df50, df60, df70, df80, dfstress, dftired, dfhealth, dfactive
-                   + rremove("x.text"),
-            ncol = 4, nrow = 3)
-  
-  plot(dfA)
+  if(length(conv) > 0){
+    df1 <- sumtotal(conv, '1 day') #activeenergyburned
     
+    df10 <- df1 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Active Energy Burned")
+    
+    subList <- list(df10)
+    plotList <-c(plotList,subList)
+  }
+
+  if(length(conv2) > 0){
+    df2 <- meantotal(conv2, '1 day') #deepsleep
+    df20 <- df2 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Deep Sleep")
+    
+    
+    datathing2 <- list(df20)
+    plotList <-c(plotList,datathing2)
+  }
+  
+  if(length(conv3) > 0){
+    df3 <- sumtotal(conv3, '1 day') #flightsclimbed
+    df30 <- df3 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Flights Climbed")
+    
+    datathing3 <- list(df30)
+    plotList <-c(plotList,datathing3)
+  }
+  
+  if(length(conv4) > 0){
+    df4 <- meantotal(conv4, '1 day') #heartrate
+    df40 <- df4 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("HeartRate")
+    datathing4 <- list(df40)
+    plotList <-c(plotList,datathing4)
+    
+  }
+  
+  if(length(conv5) > 0){
+    df5 <- meantotal(conv5, '1 day') #sleep
+    
+    df50 <- df5 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Sleep")
+    datathing5 <- list(df50)
+    plotList <-c(plotList,datathing5)
+  }
+  
+  if(length(conv6) > 0){
+    df6 <- meantotal(conv6, '1 day') #sleepheartrate
+    df60 <- df6 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Sleep Heartrate")
+    datathing6 <- list(df60)
+    plotList <-c(plotList,datathing6)
+  }
+  
+  if(length(conv7) > 0){
+    df7 <- sumtotal(conv7, '1 day') #stepcounter
+    
+    df70 <- df7 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Step Counter")
+    datathing7 <- list(df70)
+    plotList <-c(plotList,datathing7)
+  }
+  
+  if(length(conv8) > 0){
+    df8 <- sumtotal(conv8, '1 day') #walkingrunningdistance
+    
+    df80 <- df8 %>%
+      select(total, hour) %>%
+      ggplot(aes(x=hour, y=total))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Walking Running Distance")
+    datathing8 <- list(df80)
+    plotList <-c(plotList,datathing8)
+  }
+  
+  if(length(conv9) > 0){
+    dfstress <- conv9 %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      select(stresslevel, startdate) %>%
+      ggplot(aes(x=startdate, y=stresslevel))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Stress Level")
+    datathing9 <- list(dfstress)
+    plotList <-c(plotList,datathing9)
+    
+    dftired <- conv9 %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      select(tirednesslevel, startdate) %>%
+      ggplot(aes(x=startdate, y=tirednesslevel))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Tiredness Level")
+    subList0 <- list(dftired)
+    plotList <-c(plotList,subList0)
+    
+    dfhealth <- conv9 %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      select(healthinesslevel, startdate) %>%
+      ggplot(aes(x=startdate, y=healthinesslevel))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Healthiness Level")
+    
+    subList1 <- list(dfhealth)
+    plotList <-c(plotList,subList1)
+    
+    dfactive <- conv9 %>%
+      mutate(startdate = ymd_hms(startdate)) %>%
+      select(activitylevel, startdate) %>%
+      ggplot(aes(x=startdate, y=activitylevel))+
+      #geom_bar(stat="identity", fill = "#FF6666", alpha=0.7) +
+      geom_line(color = "#000000", alpha=0.7) + 
+      geom_point(color = "#FF6666", alpha=0.7) +
+      xlab("Date") +
+      ylab("Activity Level")
+    
+    subList2<- list(dfactive)
+    plotList <-c(plotList,subList2)
+  }
+
+  grid.arrange(grobs = plotList, ncol = 2) 
 }
+
+
 
 hexColor <- function(key){
   hex <- c('activeenergyburned','#66ffcc',"deepsleep", '#ff66cc', 'flightsclimbed', '#ccff99', 'heartrate', '#cc66ff', 'sleep', '#6699ff', 'sleepheartrate', '#33ccff', 'stepcounter', '#ff9999', 'walkingrunningdistance', '#ff9933',
@@ -465,54 +479,107 @@ function(dataset1,parameter1,parameter2){
   threehourCor <- cor(threehourplotMatrix[,1],threehourplotMatrix[,2])
   sixhourCor <- cor(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
   twelvehourCor <- cor(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
-  # hourT <- tTestJSON(hourplotMatrix[,1],hourplotMatrix[,2])
-  # threehourT <- tTestJSON(threehourplotMatrix[,1],threehourplotMatrix[,2])
-  # sixhourT <- tTestJSON(sixhourplotMatrix[,1],sixhourplotMatrix[,2])
-  # twelvehourT <- tTestJSON(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2])
   
   watchSummaryHour <- datasetSummaryMoodWatch(hourplotMatrix[,1])
   watchSummaryThreeHour <- datasetSummaryMoodWatch(threehourplotMatrix[,1])
   watchSummarySixHour <- datasetSummaryMoodWatch(sixhourplotMatrix[,1])
   watchSummaryTwelveHour <- datasetSummaryMoodWatch(twelvehourplotMatrix[,1])
- 
-  json <- list(hourDataWatch,
-               threehourDataWatch,
-               sixhourDataWatch,
-               twelvehourDataWatch,
-               hourCor,
-               threehourCor,
-               sixhourCor,
-               twelvehourCor,
-               # hourT,
-               # threehourT,
-               # sixhourT,
-               # twelvehourT,
-               watchSummaryHour,
-               watchSummaryThreeHour,
-               watchSummarySixHour,
-               watchSummaryTwelveHour)
-  names(json) <- c("hourDataWatch",
-                   "threehourDataWatch",
-                   "sixhourDataWatch",
-                   "twelvehourDataWatch",
-                   "hourCor",
-                   "threehourCor",
-                   "sixhourCor",
-                   "twelvehourCor",
-                   # "hourT",
-                   # "threehourT",
-                   # "sixhourT",
-                   # "twelvehourT",
-                   "watchSummaryHour",
-                   "watchSummaryThreeHour",
-                   "watchSummarySixHour",
-                   "watchSummaryTwelveHour")
-  json <- c(json,datasetSizeCheckTTest(hourplotMatrix[,1],hourplotMatrix[,2],threehourplotMatrix[,1],threehourplotMatrix[,2],sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], "hourT", "threehourT", "sixhourT", "twelvehourT"))
-  json <- toJSON(json)
+  View(parameter1)
+  View(parameter2)
+  if(parameter1 == 'sleep' || parameter1 == 'deepsleep' || parameter2 == 'sleep' || parameter2 == 'deepsleep'){
+    print("8765432")
+    json <- list(sixhourDataWatch,
+                 twelvehourDataWatch,
+                 sixhourCor,
+                 twelvehourCor,
+                 watchSummarySixHour,
+                 watchSummaryTwelveHour)
+    names(json) <- c("sixhourDataWatch",
+                     "twelvehourDataWatch",
+                     "sixhourCor",
+                     "twelvehourCor",
+                     "watchSummarySixHour",
+                     "watchSummaryTwelveHour")
+    json <- c(json,datasetSizeCheckTTestSleep(sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2],"sixhourT", "twelvehourT"))
+    json <- toJSON(json)
+  } else {
+    json <- list(hourDataWatch,
+                 threehourDataWatch,
+                 sixhourDataWatch,
+                 twelvehourDataWatch,
+                 hourCor,
+                 threehourCor,
+                 sixhourCor,
+                 twelvehourCor,
+                 watchSummaryHour,
+                 watchSummaryThreeHour,
+                 watchSummarySixHour,
+                 watchSummaryTwelveHour)
+    names(json) <- c("hourDataWatch",
+                     "threehourDataWatch",
+                     "sixhourDataWatch",
+                     "twelvehourDataWatch",
+                     "hourCor",
+                     "threehourCor",
+                     "sixhourCor",
+                     "twelvehourCor",
+                     "watchSummaryHour",
+                     "watchSummaryThreeHour",
+                     "watchSummarySixHour",
+                     "watchSummaryTwelveHour")
+    json <- c(json,datasetSizeCheckTTest(hourplotMatrix[,1],hourplotMatrix[,2],threehourplotMatrix[,1],threehourplotMatrix[,2],sixhourplotMatrix[,1],sixhourplotMatrix[,2],twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], "hourT", "threehourT", "sixhourT", "twelvehourT"))
+    json <- toJSON(json)
+  }
+  
+
 }
 
 
+datasetUnique <- function(dataset){
+  length(unique(dataset))==1
+}
 
+datasetSizeCheckTTestSleep <- function(d1,d2,d3,d4,key1,key2){
+  data <- list()
+  if((length(d1) > 1 && length(d2) > 1) && (!datasetUnique(d1) || !datasetUnique(d2))){
+    print("not in here")
+    listData <- list(tTestJSON(d1,d2))
+    names(listData) <- (key1)
+    data <- c(data, listData)
+  }
+  if((length(d3) > 1 && length(d4) > 1)  && (!datasetUnique(d3) || !datasetUnique(d4))){
+    print("not in here 2")
+    listData <- list(tTestJSON(d3,d4))
+    names(listData) <- (key2)
+    data <- c(data, listData)
+  }
+  data
+}
+
+datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
+  data <- list()
+  if((length(d1) > 1 && length(d2) > 1) && (!datasetUnique(d1) || !datasetUnique(d2))){
+    listData <- list(tTestJSON(d1,d2))
+    names(listData) <- (key1)
+    data <- c(data, listData)
+  }
+  if((length(d3) > 1 && length(d4) > 1) && (!datasetUnique(d3) || !datasetUnique(d4))){
+    listData <- list(tTestJSON(d3,d4))
+    names(listData) <- (key2)
+    data <- c(data, listData)
+  }
+  if((length(d5) > 1 && length(d6) > 1) && (!datasetUnique(d5) || !datasetUnique(d6))){
+    listData <- list(tTestJSON(d5,d6))
+    names(listData) <- (key3)
+    data <- c(data, listData)
+  }
+  if((length(d7) > 1 && length(d8) > 1) && (!datasetUnique(d7) || !datasetUnique(d8))){
+    listData <- list(tTestJSON(d7,d8))
+    names(listData) <- (key4)
+    data <- c(data, listData)
+  }
+  data
+}
 
 
 
@@ -582,31 +649,6 @@ function(dataset1,dataset2,parameter1,parameter2){
   
 }
 
-datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
-  data <- list()
-  if(length(d1) > 1 && length(d2) > 1){
-    listData <- list(tTestJSON(d1,d2))
-    names(listData) <- (key1)
-    data <- c(data, listData)
-  }
-  if(length(d3) > 1 && length(d4) > 1){
-    listData <- list(tTestJSON(d3,d4))
-    names(listData) <- (key2)
-    data <- c(data, listData)
-  }
-  if(length(d5) > 1 && length(d6) > 1){
-    listData <- list(tTestJSON(d5,d6))
-    names(listData) <- (key3)
-    data <- c(data, listData)
-  }
-  if(length(d7) > 1 && length(d8) > 1){
-    listData <- list(tTestJSON(d7,d8))
-    names(listData) <- (key4)
-    data <- c(data, listData)
-  }
-  data
-}
-
 #' MoodWatchCorrelation endpoint
 #' @param dataset1 The first dataset
 #' @param parameter1 1st parameter
@@ -614,6 +656,7 @@ datasetSizeCheckTTest <- function(d1,d2,d3,d4,d5,d6,d7,d8,key1,key2,key3,key4){
 #' @post /testendpoint
 #' @png (width = 800, height = 800)
 function(dataset1,parameter1,parameter2) {
+  
   options(scipen=999)
   hourplotMatrix <- matrix(0,length(dataset1$hourData),2)
   threehourplotMatrix <- matrix(0,length(dataset1$threeHourData),2)
@@ -648,9 +691,23 @@ function(dataset1,parameter1,parameter2) {
     counter <- counter + 1
   }
   
-  
+  if(parameter1 == 'sleep' || parameter1 == 'deepsleep' || parameter2 == 'sleep' || parameter2 == 'deepsleep'){
    title <-
     paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
+   attach(mtcars)
+   par(mfrow=c(2,1), mar=c(5,4,6,2), cex=1.5)
+   #watch mood
+   plot(sixhourplotMatrix[,1],sixhourplotMatrix[,2], type = "p", ann = FALSE)
+   title("6 Hours", xlab = parameter1, ylab = parameter2)
+   
+   plot(twelvehourplotMatrix[,1],twelvehourplotMatrix[,2], type = "p", ann = FALSE)
+   title("12 Hours", xlab = parameter1, ylab = parameter2)
+   
+   mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+   
+  } else {
+   title <-
+     paste("Correlation between", parameter1, "and", parameter2, "over ...", sep = " ")
    attach(mtcars)
    par(mfrow=c(2,2), mar=c(5,4,6,2), cex=1.5)
    #watch mood
@@ -667,6 +724,7 @@ function(dataset1,parameter1,parameter2) {
    title("12 Hours", xlab = parameter1, ylab = parameter2)
    
    mtext(title, side = 3, line = -2, outer=TRUE, cex = 2.5)
+  }
   
 
   
@@ -810,7 +868,6 @@ meantotal <- function(conv, duration1){
 }
 
 moodwatchsum <- function(dfMood, dfWatch){
-  
     full_join(dfMood, dfWatch, by = "startdate") %>% 
     arrange(startdate) %>% 
     fill(id, level, .direction = "up") %>% 
