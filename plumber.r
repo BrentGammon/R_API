@@ -39,7 +39,8 @@ function(dataset1,
          dataset6,
          dataset7,
          dataset8,
-         dataset9) {
+         dataset9,
+         aggregationValue) {
   options(scipen=999)
   conv <- as.data.frame(dataset1) #activeenergyburned
   conv2 <- as.data.frame(dataset2) #deepsleep
@@ -54,7 +55,12 @@ function(dataset1,
   plotList <- list()
   
   if(length(conv) > 0){
-    df1 <- sumtotal(conv, '1 day') #activeenergyburned
+    
+    if(aggregationValue == 'Day'){
+      df1 <- sumtotal(conv, '1 day') #activeenergyburned
+    }else{
+      df1 <- sumtotal(conv, 'hour') #activeenergyburned
+    }
     
     df10 <- df1 %>%
       select(total, hour) %>%
@@ -64,13 +70,19 @@ function(dataset1,
       geom_point(color = "#FF6666", alpha=0.7) +
       xlab("Date") +
       ylab("Active Energy Burned")
-    
+    View(df1)
     subList <- list(df10)
     plotList <-c(plotList,subList)
   }
 
   if(length(conv2) > 0){
-    df2 <- meantotal(conv2, '1 day') #deepsleep
+    
+    if(aggregationValue == 'Day'){
+      df2 <- meantotal(conv2, '1 day') #deepsleep
+    }else{
+      df2 <- meantotal(conv2, 'hour') #deepsleep
+    }
+    
     df20 <- df2 %>%
       select(total, hour) %>%
       ggplot(aes(x=hour, y=total))+
@@ -86,7 +98,13 @@ function(dataset1,
   }
   
   if(length(conv3) > 0){
-    df3 <- sumtotal(conv3, '1 day') #flightsclimbed
+    
+    if(aggregationValue == 'Day'){
+      df3 <- sumtotal(conv3, '1 day') #flightsclimbed
+    }else{
+      df3 <- sumtotal(conv3, 'hour') #flightsclimbed
+    }
+    
     df30 <- df3 %>%
       select(total, hour) %>%
       ggplot(aes(x=hour, y=total))+
@@ -101,7 +119,13 @@ function(dataset1,
   }
   
   if(length(conv4) > 0){
-    df4 <- meantotal(conv4, '1 day') #heartrate
+    
+    if(aggregationValue == 'Day'){
+      df4 <- meantotal(conv4, '1 day') #heartrate
+    }else{
+      df4 <- meantotal(conv4, 'hour') #heartrate
+    }
+    
     df40 <- df4 %>%
       select(total, hour) %>%
       ggplot(aes(x=hour, y=total))+
@@ -116,7 +140,12 @@ function(dataset1,
   }
   
   if(length(conv5) > 0){
-    df5 <- meantotal(conv5, '1 day') #sleep
+    
+    if(aggregationValue == 'Day'){
+      df5 <- meantotal(conv5, '1 day') #sleep
+    }else{
+      df5 <- meantotal(conv5, 'hour') #sleep
+    }
     
     df50 <- df5 %>%
       select(total, hour) %>%
@@ -131,7 +160,13 @@ function(dataset1,
   }
   
   if(length(conv6) > 0){
-    df6 <- meantotal(conv6, '1 day') #sleepheartrate
+    
+    if(aggregationValue == 'Day'){
+      df6 <- meantotal(conv6, '1 day') #sleepheartrate
+    }else{
+      df6 <- meantotal(conv6, 'hour') #sleepheartrate
+    }
+
     df60 <- df6 %>%
       select(total, hour) %>%
       ggplot(aes(x=hour, y=total))+
@@ -145,7 +180,12 @@ function(dataset1,
   }
   
   if(length(conv7) > 0){
-    df7 <- sumtotal(conv7, '1 day') #stepcounter
+    
+    if(aggregationValue == 'Day'){
+      df7 <- sumtotal(conv7, '1 day') #stepcounter
+    }else{
+      df7 <- sumtotal(conv7, 'hour') #stepcounter
+    }
     
     df70 <- df7 %>%
       select(total, hour) %>%
@@ -160,7 +200,12 @@ function(dataset1,
   }
   
   if(length(conv8) > 0){
-    df8 <- sumtotal(conv8, '1 day') #walkingrunningdistance
+    
+    if(aggregationValue == 'Day'){
+      df8 <- sumtotal(conv8, '1 day') #walkingrunningdistance
+    }else{
+      df8 <- sumtotal(conv8, 'hour') #walkingrunningdistance
+    }
     
     df80 <- df8 %>%
       select(total, hour) %>%
