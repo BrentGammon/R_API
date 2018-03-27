@@ -1,11 +1,13 @@
 # Set up 
 
-  - Install CRAN https://cran.r-project.org/mirrors.html
+  - Install CRAN https://cran.r-project.org/mirrors.html or RStudio https://www.rstudio.com/ (preferred) 
   - Open the R Console
   - In the R Console run this command to compile the r code 
   - you will need to load the plumber library 
  ```  
 library(plumber)
+library(ggplot2)
+library(magrittr)
 ```
 ```  
 r <- plumb('/Users/brentgammon/Desktop/plumber.r')
