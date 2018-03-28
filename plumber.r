@@ -70,7 +70,6 @@ function(dataset1,
       geom_point(color = "#FF6666", alpha=0.7) +
       xlab("Date") +
       ylab("Active Energy Burned")
-    View(df1)
     subList <- list(df10)
     plotList <-c(plotList,subList)
   }
@@ -288,9 +287,6 @@ hexColor <- function(key){
     }
     counter <- counter +1
   }
-  print("================")
-  print(color)
-  print("================")
   color
 }
 
@@ -301,12 +297,9 @@ legendColors <-function(parameters) {
   data <- matrix(0,length(parameters),1)
   counter <- 1
   
-  print(parameters)
   for(p in parameters){
-   # print(length(colors[1,]))
     colorCounter <- 1
     for(c in colors[,1]){
-      #print(c)
       if(p == c){
         data[counter] <- colors[colorCounter,2]
       }
@@ -347,7 +340,7 @@ dashboardPlot <-function(parameter, total,date, index){
 #' dashboard plot
 #' @param dataset1
 #' @post /dashboardplot
-#' @png 
+#' @png (width = 1500, height = 500)
 function(dataset1,parameter1) {
   par(new=TRUE)
   counter <- 1
@@ -376,7 +369,6 @@ function(dataset1,
          parameter2,
          duration) {
   options(scipen=999)
-  print('hello world')
   conv <- as.data.frame(dataset1)
   conv2 <- as.data.frame(dataset2)
 
@@ -413,7 +405,6 @@ function(dataset1,
     }
   }else if(parameter1 %in% userinputvalues && parameter2 %in% userinputvalues){
     #useruser
-    print("hello world")
     df1 <- meantotal(conv, 'hour')
     df2 <- meantotal(conv, '1 day')
     df3 <- meantotal(conv, '7 days')
@@ -490,7 +481,6 @@ function(dataset1,parameter1,parameter2){
   
   counter <- 1
   for(item in dataset1$sixHourData){
-    #View(item)
     sixhourplotMatrix[counter, 1] <- as.numeric(item$watch)
     sixhourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -498,7 +488,6 @@ function(dataset1,parameter1,parameter2){
   
   counter <- 1
   for(item in dataset1$twelveHourData){
-    #View(item)
     twelvehourplotMatrix[counter, 1] <- as.numeric(item$watch)
     twelvehourplotMatrix[counter, 2] <- as.numeric(item$mood)
     counter <- counter + 1
@@ -529,10 +518,7 @@ function(dataset1,parameter1,parameter2){
   watchSummaryThreeHour <- datasetSummaryMoodWatch(threehourplotMatrix[,1])
   watchSummarySixHour <- datasetSummaryMoodWatch(sixhourplotMatrix[,1])
   watchSummaryTwelveHour <- datasetSummaryMoodWatch(twelvehourplotMatrix[,1])
-  View(parameter1)
-  View(parameter2)
   if(parameter1 == 'sleep' || parameter1 == 'deepsleep' || parameter2 == 'sleep' || parameter2 == 'deepsleep'){
-    print("8765432")
     json <- list(sixhourDataWatch,
                  twelvehourDataWatch,
                  sixhourCor,
@@ -587,13 +573,11 @@ datasetUnique <- function(dataset){
 datasetSizeCheckTTestSleep <- function(d1,d2,d3,d4,key1,key2){
   data <- list()
   if((length(d1) > 1 && length(d2) > 1) && (!datasetUnique(d1) || !datasetUnique(d2))){
-    print("not in here")
     listData <- list(tTestJSON(d1,d2))
     names(listData) <- (key1)
     data <- c(data, listData)
   }
   if((length(d3) > 1 && length(d4) > 1)  && (!datasetUnique(d3) || !datasetUnique(d4))){
-    print("not in here 2")
     listData <- list(tTestJSON(d3,d4))
     names(listData) <- (key2)
     data <- c(data, listData)
@@ -903,7 +887,6 @@ sumtotal <- function(conv, duration1){
 }
 
 meantotal <- function(conv, duration1){
-  print(duration1)
   conv %>%
     mutate(startdate = ymd_hms(startdate)) %>%
     mutate(total = as.numeric(total)) %>%
